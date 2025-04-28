@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prime Mart - Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100%;
+      background-color: #2c3e50;
+      color: white;
+      padding-top: 20px;
+      transition: all 0.3s;
+    }
+    .sidebar a {
+      color: white;
+      padding: 15px 20px;
+      display: block;
+      text-decoration: none;
+    }
+    .sidebar a:hover {
+      background-color: #34495e;
+    }
+    .main-content {
+      margin-left: 250px;
+      padding: 20px;
+    }
+    .section {
+      display: none;
+    }
+    .section.active {
+      display: block;
+    }
+    .card {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      font-weight: bold;
+    }
+    .table th {
+      background-color: #e9ecef;
+    }
+    .analytics-chart {
+      height: 300px;
+      background-color: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6c757d;
+    }
+    .status-pending { color: #ff6200; }
+    .status-shipped { color: #28a745; }
+    .status-completed { color: #17a2b8; }
+    .status-canceled { color: #dc3545; }
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 0.875rem;
+    }
+    .modal-backdrop {
+      z-index: 1040 !important;
+    }
+    .modal {
+      z-index: 1050 !important;
+    }
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #6c757d;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h4 class="text-center mb-4">Prime Mart Admin</h4>
+    <a href="#" data-section="dashboard">Dashboard</a>
+    <a href="#" data-section="product-management">Product Management</a>
+    <a href="#" data-section="order-management">Order Management</a>
+    <a href="#" data-section="user-management">User Management</a>
+    <a href="#" data-section="sales-analytics">Sales & Analytics</a>
+    <a href="#" data-section="promotions-management">Promotions Management</a>
+    <a href="#" data-section="content-management">Content Management</a>
+    <a href="#" data-section="site-settings">Site Settings</a>
+    <a href="#" data-section="support-management">Support Management</a>
+    <a href="#" data-section="security-roles">Security & Roles</a>
+    <a href="/logout" class="mt-5">Logout</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Dashboard Section -->
+    <div id="dashboard" class="section active">
+      <h2>Admin Dashboard</h2>
+      <div class="row" id="dashboard-stats">
+        <div class="loading">Loading...</div>
+      </div>
+    </div>
+
+    <!-- Product Management Section -->
+    <div id="product-management" class="section">
+      <h2>Product Management</h2>
+      <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">Add New Product</button>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Discount</th>
+            <th>Stock</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="product-table">
+          <tr><td colspan="6" class="loading">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Order Management Section -->
+    <div id="order-management" class="section">
+      <h2>Order Management</h2>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="order-table">
+          <tr><td colspan="5" class="loading">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- User Management Section -->
+    <div id="user-management" class="section">
+      <h2>User Management</h2>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="user-table">
+          <tr><td colspan="5" class="loading">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Sales and Analytics Section -->
+    <div id="sales-analytics" class="section">
+      <h2>Sales & Analytics</h2>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Sales Report (Monthly)</h5>
+              <div class="analytics-chart">Chart Placeholder (e.g., Sales Over Time)</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Best-Selling Products</h5>
+              <ul id="best-sellers" class="list-group">
+                <li class="list-group-item loading">Loading...</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Promotions Management Section -->
+    <div id="promotions-management" class="section">
+      <h2>Promotions Management</h2>
+      <button class="btn btn-primary mb-3" onclick="alert('Create new promotion (e.g., coupon code, flash sale)')">Create New Promotion</button>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Promotion ID</th>
+            <th>Name</th>
+            <th>Discount</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="promotion-table">
+          <tr><td colspan="5" class="loading">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Content Management Section -->
+    <div id="content-management" class="section">
+      <h2>Content Management</h2>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Homepage Banners</h5>
+          <button class="btn btn-primary mb-3" onclick="alert('Add new banner image and message')">Add Banner</button>
+          <ul id="banner-list" class="list-group">
+            <li class="list-group-item loading">Loading...</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Site Settings Section -->
+    <div id="site-settings" class="section">
+      <h2>Site Settings</h2>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Shipping & Tax</h5>
+          <form id="site-settings-form">
+            <div class="mb-3">
+              <label for="shipping-rate" class="form-label">Flat Shipping Rate (₹)</label>
+              <input type="number" class="form-control" id="shipping-rate" value="100">
+            </div>
+            <div class="mb-3">
+              <label for="tax-rate" class="form-label">Tax Rate (%)</label>
+              <input type="number" class="form-control" id="tax-rate" value="18">
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        </div>
+      </div>
+      <div class="card mt-3">
+        <div class="card-body">
+          <h5 class="card-title">Payment Gateways</h5>
+          <button class="btn btn-primary" onclick="alert('Connect Stripe, PayPal, etc.')">Connect Payment Gateway</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Support Management Section -->
+    <div id="support-management" class="section">
+      <h2>Support Management</h2>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Ticket ID</th>
+            <th>Customer</th>
+            <th>Issue</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="support-table">
+          <tr><td colspan="5" class="loading">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Security and Roles Section -->
+    <div id="security-roles" class="section">
+      <h2>Security & Roles</h2>
+      <button class="btn btn-primary mb-3" onclick="alert('Create new admin role')">Add New Role</button>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Permissions</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="roles-table">
+          <tr><td colspan="3" class="loading">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add Product Modal -->
+  <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="add-product-form">
+            <div class="mb-3">
+              <label for="product-title" class="form-label">Title</label>
+              <input type="text" class="form-control" id="product-title" required>
+            </div>
+            <div class="mb-3">
+              <label for="product-description" class="form-label">Description</label>
+              <textarea class="form-control" id="product-description" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="product-image" class="form-label">Image URL</label>
+              <input type="text" class="form-control" id="product-image" required>
+            </div>
+            <div class="mb-3">
+              <label for="product-price" class="form-label">Price (₹)</label>
+              <input type="number" class="form-control" id="product-price" required>
+            </div>
+            <div class="mb-3">
+              <label for="product-discount" class="form-label">Discount (%)</label>
+              <input type="number" class="form-control" id="product-discount" value="0">
+            </div>
+            <div class="mb-3">
+              <label for="product-stock" class="form-label">Stock Status</label>
+              <select class="form-control" id="product-stock" required>
+                <option value="In Stock">In Stock</option>
+                <option value="Out of Stock">Out of Stock</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Product</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API_BASE_URL = 'http://localhost:3800/api'; // Updated to match the server port
+
+    // Navigation
+    document.querySelectorAll('.sidebar a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sectionId = link.getAttribute('data-section');
+        if (sectionId) {
+          document.querySelectorAll('.section').forEach(section => {
+            section.classList.remove('active');
+          });
+          document.getElementById(sectionId).classList.add('active');
+        }
+      });
+    });
+
+    // Fetch and Populate Dashboard Stats
+    async function populateDashboardStats() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/sales-analytics`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        const statsDiv = document.getElementById('dashboard-stats');
+        statsDiv.innerHTML = `
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Total Sales</h5>
+                <p class="card-text">₹${data.totalSales}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Total Orders</h5>
+                <p class="card-text">${data.totalOrders}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Total Users</h5>
+                <p class="card-text">${data.totalUsers}</p>
+              </div>
+            </div>
+          </div>
+        `;
+      } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+        const statsDiv = document.getElementById('dashboard-stats');
+        statsDiv.innerHTML = `<div class="col-12 text-danger">Failed to load stats: ${error.message}</div>`;
+      }
+    }
+
+    // Fetch and Populate Product Table
+    async function populateProductTable() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/products`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const products = await response.json();
+        const tbody = document.getElementById('product-table');
+        tbody.innerHTML = '';
+        products.forEach(product => {
+          const row = `
+            <tr>
+              <td>${product.id}</td>
+              <td>${product.title}</td>
+              <td>₹${product.price}</td>
+              <td>${product.discount}%</td>
+              <td>${product.stock}</td>
+              <td>
+                <button class="btn btn-warning btn-sm me-2" onclick="alert('Edit product ${product.id}')">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id})">Delete</button>
+              </td>
+            </tr>
+          `;
+          tbody.innerHTML += row;
+        });
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        const tbody = document.getElementById('product-table');
+        tbody.innerHTML = `<tr><td colspan="6" class="text-danger">Failed to load products: ${error.message}</td></tr>`;
+      }
+    }
+
+    // Delete Product
+    async function deleteProduct(id) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+          method: 'DELETE'
+        });
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const result = await response.json();
+        if (result.deleted) {
+          populateProductTable();
+        }
+      } catch (error) {
+        console.error('Error deleting product:', error);
+      }
+    }
+
+    // Add Product
+    document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const newProduct = {
+        title: document.getElementById('product-title').value,
+        price: parseFloat(document.getElementById('product-price').value),
+        discount: parseInt(document.getElementById('product-discount').value),
+        stock: document.getElementById('product-stock').value
+      };
+      try {
+        const response = await fetch(`${API_BASE_URL}/products`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newProduct)
+        });
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const result = await response.json();
+        if (result.id) {
+          populateProductTable();
+          bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
+          document.getElementById('add-product-form').reset();
+        }
+      } catch (error) {
+        console.error('Error adding product:', error);
+      }
+    });
+
+    // Fetch and Populate Order Table
+    async function populateOrderTable() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/orders`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const orders = await response.json();
+        const tbody = document.getElementById('order-table');
+        tbody.innerHTML = '';
+        orders.forEach(order => {
+          const row = `
+            <tr>
+              <td>${order.id}</td>
+              <td>${order.customer}</td>
+              <td>₹${order.total}</td>
+              <td class="status-${order.status.toLowerCase()}">${order.status}</td>
+              <td>
+                <select onchange="updateOrderStatus(${order.id}, this.value)">
+                  <option value="Pending" ${order.status === "Pending" ? "selected" : ""}>Pending</option>
+                  <option value="Shipped" ${order.status === "Shipped" ? "selected" : ""}>Shipped</option>
+                  <option value="Completed" ${order.status === "Completed" ? "selected" : ""}>Completed</option>
+                  <option value="Canceled" ${order.status === "Canceled" ? "selected" : ""}>Canceled</option>
+                </select>
+                <button class="btn btn-danger btn-sm mt-1" onclick="alert('Manage refund for order ${order.id}')">Refund</button>
+              </td>
+            </tr>
+          `;
+          tbody.innerHTML += row;
+        });
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+        const tbody = document.getElementById('order-table');
+        tbody.innerHTML = `<tr><td colspan="5" class="text-danger">Failed to load orders: ${error.message}</td></tr>`;
+      }
+    }
+
+    async function updateOrderStatus(id, status) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/orders/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const result = await response.json();
+        if (result.updated) {
+          populateOrderTable();
+        }
+      } catch (error) {
+        console.error('Error updating order status:', error);
+      }
+    }
+
+    // Fetch and Populate User Table
+    async function populateUserTable() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/users`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const users = await response.json();
+        const tbody = document.getElementById('user-table');
+        tbody.innerHTML = '';
+        users.forEach(user => {
+          const row = `
+            <tr>
+              <td>${user.id}</td>
+              <td>${user.username}</td>
+              <td>${user.email}</td>
+              <td>${user.status}</td>
+              <td>
+                <button class="btn btn-${user.status === 'Active' ? 'danger' : 'success'} btn-sm me-2" onclick="toggleUserStatus(${user.id}, '${user.status}')">${user.status === 'Active' ? 'Ban' : 'Unban'}</button>
+                <button class="btn btn-warning btn-sm" onclick="alert('Reset password for user ${user.id}')">Reset Password</button>
+              </td>
+            </tr>
+          `;
+          tbody.innerHTML += row;
+        });
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        const tbody = document.getElementById('user-table');
+        tbody.innerHTML = `<tr><td colspan="5" class="text-danger">Failed to load users: ${error.message}</td></tr>`;
+      }
+    }
+
+    async function toggleUserStatus(id, currentStatus) {
+      const newStatus = currentStatus === 'Active' ? 'Banned' : 'Active';
+      try {
+        const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const result = await response.json();
+        if (result.updated) {
+          populateUserTable();
+        }
+      } catch (error) {
+        console.error('Error toggling user status:', error);
+      }
+    }
+
+    // Fetch and Populate Best Sellers
+    async function populateBestSellers() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/sales-analytics`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        const list = document.getElementById('best-sellers');
+        list.innerHTML = '';
+        data.bestSellers.forEach(item => {
+          const li = `<li class="list-group-item">${item.name} - ${item.sales} units</li>`;
+          list.innerHTML += li;
+        });
+      } catch (error) {
+        console.error('Error fetching best sellers:', error);
+        const list = document.getElementById('best-sellers');
+        list.innerHTML = `<li class="list-group-item text-danger">Failed to load best sellers: ${error.message}</li>`;
+      }
+    }
+
+    // Fetch and Populate Promotions Table
+    async function populatePromotionTable() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/promotions`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const promotions = await response.json();
+        const tbody = document.getElementById('promotion-table');
+        tbody.innerHTML = '';
+        promotions.forEach(promo => {
+          const row = `
+            <tr>
+              <td>${promo.id}</td>
+              <td>${promo.name}</td>
+              <td>${promo.discount}</td>
+              <td>${promo.status}</td>
+              <td>
+                <button class="btn btn-warning btn-sm me-2" onclick="alert('Edit promotion ${promo.id}')">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="alert('Delete promotion ${promo.id}')">Delete</button>
+              </td>
+            </tr>
+          `;
+          tbody.innerHTML += row;
+        });
+      } catch (error) {
+        console.error('Error fetching promotions:', error);
+        const tbody = document.getElementById('promotion-table');
+        tbody.innerHTML = `<tr><td colspan="5" class="text-danger">Failed to load promotions: ${error.message}</td></tr>`;
+      }
+    }
+
+    // Fetch and Populate Banner List
+    async function populateBannerList() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/banners`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const banners = await response.json();
+        const list = document.getElementById('banner-list');
+        list.innerHTML = '';
+        banners.forEach(banner => {
+          const li = `
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              ${banner.message}
+              <button class="btn btn-danger btn-sm" onclick="alert('Delete banner ${banner.id}')">Delete</button>
+            </li>
+          `;
+          list.innerHTML += li;
+        });
+      } catch (error) {
+        console.error('Error fetching banners:', error);
+        const list = document.getElementById('banner-list');
+        list.innerHTML = `<li class="list-group-item text-danger">Failed to load banners: ${error.message}</li>`;
+      }
+    }
+
+    // Fetch and Populate Support Table
+    async function populateSupportTable() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/support-tickets`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const tickets = await response.json();
+        const tbody = document.getElementById('support-table');
+        tbody.innerHTML = '';
+        tickets.forEach(ticket => {
+          const row = `
+            <tr>
+              <td>${ticket.id}</td>
+              <td>${ticket.customer}</td>
+              <td>${ticket.issue}</td>
+              <td>${ticket.status}</td>
+              <td>
+                <button class="btn btn-primary btn-sm" onclick="alert('Respond to ticket ${ticket.id}')">Respond</button>
+              </td>
+            </tr>
+          `;
+          tbody.innerHTML += row;
+        });
+      } catch (error) {
+        console.error('Error fetching support tickets:', error);
+        const tbody = document.getElementById('support-table');
+        tbody.innerHTML = `<tr><td colspan="5" class="text-danger">Failed to load support tickets: ${error.message}</td></tr>`;
+      }
+    }
+
+    // Fetch and Populate Roles Table
+    async function populateRolesTable() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/roles`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const roles = await response.json();
+        const tbody = document.getElementById('roles-table');
+        tbody.innerHTML = '';
+        roles.forEach(role => {
+          const row = `
+            <tr>
+              <td>${role.role}</td>
+              <td>${role.permissions}</td>
+              <td>
+                <button class="btn btn-warning btn-sm me-2" onclick="alert('Edit role ${role.role}')">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="alert('Delete role ${role.role}')">Delete</button>
+              </td>
+            </tr>
+          `;
+          tbody.innerHTML += row;
+        });
+      } catch (error) {
+        console.error('Error fetching roles:', error);
+        const tbody = document.getElementById('roles-table');
+        tbody.innerHTML = `<tr><td colspan="3" class="text-danger">Failed to load roles: ${error.message}</td></tr>`;
+      }
+    }
+
+    // Fetch and Populate Site Settings
+    async function populateSiteSettings() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/site-settings`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const settings = await response.json();
+        document.getElementById('shipping-rate').value = settings.shippingRate;
+        document.getElementById('tax-rate').value = settings.taxRate;
+      } catch (error) {
+        console.error('Error fetching site settings:', error);
+      }
+    }
+
+    // Save Site Settings
+    document.getElementById('site-settings-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const settings = {
+        shippingRate: parseFloat(document.getElementById('shipping-rate').value),
+        taxRate: parseFloat(document.getElementById('tax-rate').value)
+      };
+      try {
+        const response = await fetch(`${API_BASE_URL}/site-settings`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(settings)
+        });
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const result = await response.json();
+        alert(result.message);
+      } catch (error) {
+        console.error('Error saving site settings:', error);
+      }
+    });
+
+    // Initialize Tables and Data
+    document.addEventListener('DOMContentLoaded', () => {
+      populateDashboardStats();
+      populateProductTable();
+      populateOrderTable();
+      populateUserTable();
+      populateBestSellers();
+      populatePromotionTable();
+      populateBannerList();
+      populateSupportTable();
+      populateRolesTable();
+      populateSiteSettings();
+    });
+  </script>
+</body>
+</html>
