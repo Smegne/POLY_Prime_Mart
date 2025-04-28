@@ -429,7 +429,7 @@ footer a:hover {
 }
 
 .cart-sidebar-header {
-  display: fft;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
@@ -504,6 +504,150 @@ footer a:hover {
 #cd-shadow-layer.active {
   opacity: 1;
   visibility: visible;
+}
+
+/* Quick View Modal Styles */
+#quickViewModal .modal-content {
+  border-radius: 8px;
+}
+
+#quickViewModal .modal-header {
+  border-bottom: none;
+}
+
+#quickViewModal .modal-body {
+  padding: 20px;
+}
+
+#quickViewModal .modal-title {
+  display: none; /* Hidden as per screenshot */
+}
+
+#quickViewModal .carousel-item img {
+  border-radius: 8px;
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+}
+
+#quickViewModal .carousel-indicators {
+  bottom: -40px;
+}
+
+#quickViewModal .carousel-indicators button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #bbb;
+  border: none;
+  margin: 0 5px;
+}
+
+#quickViewModal .carousel-indicators .active {
+  background-color: #333;
+}
+
+#quickViewModal h4 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#quickViewModal #quick-view-price .text-muted {
+  font-size: 1.2rem;
+  color: #800080 !important; /* Purple for original price */
+}
+
+#quickViewModal #quick-view-price .text-danger {
+  font-size: 1.5rem;
+}
+
+#quickViewModal #quick-view-discount.discount-badge {
+  background-color: #ff6200;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+#quickViewModal ul li {
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+#quickViewModal ul li strong {
+  font-weight: 600;
+}
+
+#quickViewModal .form-check-input {
+  margin-right: 5px;
+}
+
+#quickViewModal .form-check-label {
+  font-size: 0.9rem;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#quickViewModal .form-check-input:checked + .form-check-label {
+  background-color: #f0f0f0;
+  border-color: #999;
+}
+
+#quickViewModal .quantity-selector .btn {
+  padding: 5px 10px;
+}
+
+#quickViewModal .quantity-selector input {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+#quickViewModal .btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+#quickViewModal .btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #5a6268;
+}
+
+@media (max-width: 767px) {
+  #quickViewModal .modal-body {
+    padding: 15px;
+  }
+
+  #quickViewModal .carousel-item img {
+    max-height: 300px;
+    margin-bottom: 15px;
+  }
+
+  #quickViewModal h4 {
+    font-size: 1.25rem;
+  }
+
+  #quickViewModal #quick-view-price .text-muted {
+    font-size: 1rem;
+  }
+
+  #quickViewModal #quick-view-price .text-danger {
+    font-size: 1.2rem;
+  }
+
+  #quickViewModal .carousel-indicators {
+    bottom: -30px;
+  }
+
+  #quickViewModal .carousel-indicators button {
+    width: 8px;
+    height: 8px;
+  }
 }
 
 /* Responsive adjustments */

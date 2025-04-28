@@ -184,6 +184,8 @@
     .cart-item {
       border-bottom: 1px solid #eee;
       padding-bottom: 10px;
+      display: flex;
+      align-items: center;
     }
 
     .cart-item-img {
@@ -236,6 +238,50 @@
     #cd-shadow-layer.active {
       opacity: 1;
       visibility: visible;
+    }
+
+    /* Quick View Images */
+    .quick-view-images img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+
+    .quick-view-images {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    /* Stacked Images in Product Card */
+    .stacked-images img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+
+    .stacked-images p {
+      text-align: center;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    /* Remove button style */
+    .remove-cart-item {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #ff0000;
+      margin-right: 10px;
+    }
+
+    .remove-cart-item:hover {
+      color: #cc0000;
     }
 
     @media (max-width: 991px) {
@@ -294,477 +340,984 @@
           <li class="nav-item">
             <a class="nav-link" href="/contact">CONTACT</a>
           </li>
-          </ul>
-          <ul class="navbar-nav ms-auto">
-            <% if (session.user) { %>
-              <li class="nav-item">
-                <div class="search-container">
-                  <i class="bi bi-search search-icon"></i>
-                  <input type="text" class="search-bar" placeholder="Search...">
-                </div>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
-              </li>
-              <li class="nav-item">
-                <span class="nav-link">My Account</span>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link btn btn-outline-danger" href="/logout">LOGOUT</a>
-              </li>
-            <% } else { %>
-              <li class="nav-item">
-                <div class="search-container">
-                  <i class="bi bi-search search-icon"></i>
-                  <input type="text" class="search-bar" placeholder="Search...">
-                </div>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link btn btn-outline-primary me-2" href="#" data-bs-toggle="modal" data-bs-target="#authModal" data-form="login">LOGIN</a>
-              </li>
-            <% } %>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Cart Sidebar -->
-    <div id="cd-shadow-layer"></div>
-    <div id="cart-sidebar">
-      <div class="cart-sidebar-header">
-        <h2>Your Cart</h2>
-        <button class="close-cart-sidebar">×</button>
-      </div>
-      <div id="cart-sidebar-items"></div>
-      <div class="cart-sidebar-footer">
-        <p>Total: ₹<span id="cart-sidebar-total">0.00</span></p>
-        <a href="/checkout" class="btn btn-primary w-100">Proceed to Checkout</a>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <% if (session.user) { %>
+            <li class="nav-item">
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
+            </li>
+            <li class="nav-item">
+              <span class="nav-link">My Account</span>
+            </li>
+            <li class="nav-item">
+              <div class="search-container">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" class="search-bar" placeholder="Search...">
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-outline-danger" href="/logout">LOGOUT</a>
+            </li>
+          <% } else { %>
+            <li class="nav-item">
+              <div class="search-container">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" class="search-bar" placeholder="Search...">
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-outline-primary me-2" href="#" data-bs-toggle="modal" data-bs-target="#authModal" data-form="login">LOGIN</a>
+            </li>
+          <% } %>
+        </ul>
       </div>
     </div>
+  </nav>
 
-    <!-- Auth Modal -->
-    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-          <div class="modal-body">
-            <div class="row gx-4">
-              <!-- Login Form -->
-              <div class="col-md-6 login-section">
-                <h3 class="mb-4">LOGIN</h3>
-                <form id="loginForm" action="/login" method="POST">
-                  <div class="mb-3">
-                    <label for="loginUsername" class="form-label">Username or email address <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="loginUsername" name="username" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="loginPassword" class="form-label">Password <span class="text-danger">*</span></label>
-                    <input type="password" class="form-control" id="loginPassword" name="password" required>
-                  </div>
-                  <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
-                    <label class="form-check-label" for="rememberMe">Remember me</label>
-                  </div>
-                  <button type="submit" class="btn btn-primary w-100">LOG IN</button>
-                  <p class=" Basic Cart Icon  mt-3"><a href="#" class="text-muted">Lost your password?</a></p>
-                </form>
+  <!-- Cart Sidebar -->
+  <div id="cd-shadow-layer"></div>
+  <div id="cart-sidebar">
+    <div class="cart-sidebar-header">
+      <h2>Your Cart</h2>
+      <button class="close-cart-sidebar">×</button>
+    </div>
+    <div id="cart-sidebar-items"></div>
+    <div class="cart-sidebar-footer">
+      <p>Total: ₹<span id="cart-sidebar-total">0.00</span></p>
+      <a href="/checkout" class="btn btn-primary w-100">Proceed to Checkout</a>
+    </div>
+  </div>
+
+  <!-- Quick View Modal -->
+  <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="quickViewModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="quick-view-images" id="quick-view-images">
+                <!-- Images will be dynamically populated -->
               </div>
-              <!-- Register Form -->
-              <div class="col-md-6 register-section">
-                <h3 class="mb-4">REGISTER</h3>
-                <form id="registerForm" action="/register" method="POST">
-                  <div class="mb-3">
-                    <label for="registerUsername" class="form-label">Username <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="registerUsername" name="username" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="registerEmail" class="form-label">Email address <span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" id="registerEmail" name="email" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="registerPassword" class="form-label">Password <span class="text-danger">*</span></label>
-                    <input type="password" class="form-control" id="registerPassword" name="password" required>
-                  </div>
-                  <button type="submit" class="btn btn-primary w-100">REGISTER</button>
-                </form>
+            </div>
+            <div class="col-md-6">
+              <h4 id="quick-view-title"></h4>
+              <p id="quick-view-price" class="mb-2">
+                <span id="quick-view-original-price" class="text-decoration-line-through text-muted"></span>
+                <span id="quick-view-discounted-price" class="text-danger fw-bold"></span>
+              </p>
+              <span id="quick-view-discount" class="discount-badge mb-3 d-inline-block"></span>
+              <ul id="quick-view-details" class="list-unstyled mb-3">
+                <li><strong>Fit:</strong> <span id="quick-view-fit"></span></li>
+                <li><strong>Bottom:</strong> <span id="quick-view-bottom"></span></li>
+                <li><strong>Material:</strong> <span id="quick-view-material"></span></li>
+                <li><strong>Hem/Cuff:</strong> <span id="quick-view-hem-cuff"></span></li>
+                <li><strong>Colour:</strong> <span id="quick-view-colour"></span></li>
+              </ul>
+              <div class="mb-3">
+                <strong>Size:</strong>
+                <div id="quick-view-sizes" class="d-flex flex-wrap gap-2 mt-2"></div>
               </div>
+              <div class="mb-3 d-flex align-items-center">
+                <strong class="me-2">Quantity:</strong>
+                <div class="quantity-selector d-flex align-items-center">
+                  <button id="quick-view-decrease" class="btn btn-outline-secondary btn-sm">-</button>
+                  <input id="quick-view-quantity" type="text" value="1" class="form-control text-center mx-2" style="width: 50px;" readonly>
+                  <button id="quick-view-increase" class="btn btn-outline-secondary btn-sm">+</button>
+                </div>
+              </div>
+              <button id="quick-view-add-to-cart" class="btn btn-secondary w-100 mb-2" data-id="">ADD TO CART</button>
+              <p><strong>SKU:</strong> <span id="quick-view-sku"></span></p>
+              <p><strong>Category:</strong> <span id="quick-view-category"></span></p>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Shop Section -->
-    <section class="shop-section py-5">
-      <div class="container">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Shop</li>
-          </ol>
-        </nav>
-        <button class="sidebar-toggle">Toggle Filters</button>
-        <div class="row">
-          <!-- Sidebar -->
-          <div class="col-lg-3 col-md-4 sidebar" id="sidebar">
-            <h5>BROWSE</h5>
-            <ul id="category-list">
-              <!-- Categories will be dynamically populated -->
-            </ul>
-            <div class="price-filter">
-              <h5>FILTER BY PRICE</h5>
-              <div class="price-range-container">
-                <input type="range" class="price-range" id="min-price" min="500" max="8000" value="500" step="100">
-                <input type="range" class="price-range" id="max-price" min="500" max="8000" value="8000" step="100">
-              </div>
-              <p>Price: ₹<span id="min-price-value">500</span> – ₹<span id="max-price-value">8000</span></p>
-              <button class="filter-btn">FILTER</button>
+  <!-- Auth Modal -->
+  <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="row gx-4">
+            <!-- Login Form -->
+            <div class="col-md-6 login-section">
+              <h3 class="mb-4">LOGIN</h3>
+              <form id="loginForm" action="/login" method="POST">
+                <div class="mb-3">
+                  <label for="loginUsername" class="form-label">Username or email address <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="loginUsername" name="username" required>
+                </div>
+                <div class="mb-3">
+                  <label for="loginPassword" class="form-label">Password <span class="text-danger">*</span></label>
+                  <input type="password" class="form-control" id="loginPassword" name="password" required>
+                </div>
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
+                  <label class="form-check-label" for="rememberMe">Remember me</label>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">LOG IN</button>
+                <p class="mt-3"><a href="#" class="text-muted">Lost your password?</a></p>
+              </form>
             </div>
-          </div>
-          <!-- Product Grid -->
-          <div class="col-lg-9 col-md-8">
-            <div class="sort-section">
-              <p id="results-count">Showing all 15 results</p>
-              <select id="sort-options">
-                <option value="popularity">Sort by popularity</option>
-                <option value="rating">Sort by average rating</option>
-                <option value="latest">Sort by latest</option>
-                <option value="price-low">Sort by price: low to high</option>
-                <option value="price-high">Sort by price: high to low</option>
-              </select>
-            </div>
-            <div class="row" id="product-list">
-              <!-- Products will be dynamically added here -->
+            <!-- Register Form -->
+            <div class="col-md-6 register-section">
+              <h3 class="mb-4">REGISTER</h3>
+              <form id="registerForm" action="/register" method="POST">
+                <div class="mb-3">
+                  <label for="registerUsername" class="form-label">Username <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="registerUsername" name="username" required>
+                </div>
+                <div class="mb-3">
+                  <label for="registerEmail" class="form-label">Email address <span class="text-danger">*</span></label>
+                  <input type="email" class="form-control" id="registerEmail" name="email" required>
+                </div>
+                <div class="mb-3">
+                  <label for="registerPassword" class="form-label">Password <span class="text-danger">*</span></label>
+                  <input type="password" class="form-control" id="registerPassword" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">REGISTER</button>
+              </form>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <!-- Footer -->
-    <footer class="bg-purple text-white py-4">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <h5>ABOUT US</h5>
-            <p>
-              Welcome to Prime Mart, the ultimate destination for premium BRANDED clothing. We specialize in offering a curated selection of high-quality, stylish apparel from top global brands. Our collection is designed for fashion-conscious individuals.
-            </p>
-          </div>
-          <div class="col-md-4">
-            <h5>QUICK LINKS</h5>
-            <ul class="list-unstyled">
-              <li><a href="/about" class="text-white">About us</a></li>
-              <li><a href="/privacy" class="text-white">Privacy Policy</a></li>
-              <li><a href="/terms" class="text-white">Terms and Conditions</a></li>
-            </ul>
-          </div>
-          <div class="col-md-4">
-            <h5>REACH US AT</h5>
-            <p>PRIME MART DEALS</p>
-            <p><a href="mailto:support@classicstore.co" class="text-white">support@classicstore.co</a></p>
+  <!-- Shop Section -->
+  <section class="shop-section py-5">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Shop</li>
+        </ol>
+      </nav>
+      <button class="sidebar-toggle">Toggle Filters</button>
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4 sidebar" id="sidebar">
+          <h5>BROWSE</h5>
+          <ul id="category-list">
+            <!-- Categories will be dynamically populated -->
+          </ul>
+          <div class="price-filter">
+            <h5>FILTER BY PRICE</h5>
+            <div class="price-range-container">
+              <input type="range" class="price-range" id="min-price" min="500" max="8000" value="500" step="100">
+              <input type="range" class="price-range" id="max-price" min="500" max="8000" value="8000" step="100">
+            </div>
+            <p>Price: ₹<span id="min-price-value">500</span> – ₹<span id="max-price-value">8000</span></p>
+            <button class="filter-btn">FILTER</button>
           </div>
         </div>
-        <div class="text-center mt-3">
-          <p>© 2025 Prime Mart. All rights reserved.</p>
+        <!-- Product Grid -->
+        <div class="col-lg-9 col-md-8">
+          <div class="sort-section">
+            <p id="results-count">Showing all 15 results</p>
+            <select id="sort-options">
+              <option value="popularity">Sort by popularity</option>
+              <option value="rating">Sort by average rating</option>
+              <option value="latest">Sort by latest</option>
+              <option value="price-low">Sort by price: low to high</option>
+              <option value="price-high">Sort by price: high to low</option>
+            </select>
+          </div>
+          <div class="row" id="product-list">
+            <!-- Products will be dynamically added here -->
+          </div>
         </div>
       </div>
-    </footer>
+    </div>
+  </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="/scripts.js"></script>
-    <script>
-      // Search bar toggle functionality
-      document.querySelector('.search-icon').addEventListener('click', function() {
-        const searchBar = document.querySelector('.search-bar');
-        searchBar.classList.toggle('active');
-        if (searchBar.classList.contains('active')) {
-          searchBar.focus();
-        }
-      });
+  <!-- Footer -->
+  <footer class="bg-purple text-white py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h5>ABOUT US</h5>
+          <p>
+            Welcome to Prime Mart, the ultimate destination for premium BRANDED clothing. We specialize in offering a curated selection of high-quality, stylish apparel from top global brands. Our collection is designed for fashion-conscious individuals.
+          </p>
+        </div>
+        <div class="col-md-4">
+          <h5>QUICK LINKS</h5>
+          <ul class="list-unstyled">
+            <li><a href="/about" class="text-white">About us</a></li>
+            <li><a href="/privacy" class="text-white">Privacy Policy</a></li>
+            <li><a href="/terms" class="text-white">Terms and Conditions</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5>REACH US AT</h5>
+          <p>PRIME MART DEALS</p>
+          <p><a href="mailto:support@classicstore.co" class="text-white">support@classicstore.co</a></p>
+        </div>
+      </div>
+      <div class="text-center mt-3">
+        <p>© 2025 Prime Mart. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
 
-      // Cart sidebar toggle functionality
-      const cartTrigger = document.getElementById('cart-trigger');
-      const cartSidebar = document.getElementById('cart-sidebar');
-      const shadowLayer = document.getElementById('cd-shadow-layer');
-      const closeCartBtn = document.querySelector('.close-cart-sidebar');
-
-      cartTrigger.addEventListener('click', (e) => {
-        e.preventDefault();
-        cleanCartData(); // Validate and clean cart data before opening
-        cartSidebar.classList.add('active');
-        shadowLayer.classList.add('active');
-        updateCartTotal();
-        updateCartSidebar();
-      });
-
-      closeCartBtn.addEventListener('click', () => {
-        cartSidebar.classList.remove('active');
-        shadowLayer.classList.remove('active');
-      });
-
-      shadowLayer.addEventListener('click', () => {
-        cartSidebar.classList.remove('active');
-        shadowLayer.classList.remove('active');
-      });
-
-      // Product data with categories and popularity scores
-      const products = [
-        { id: 1, name: "Adidas Mens Blue Classic Tracksuit", price: 1999.00, originalPrice: 4999.00, image: "https://images.unsplash.com/photo-1599058917212-d750089bc07e", rating: 4.0, category: "Tracksuits", popularityScore: 90 },
-        { id: 2, name: "Adidas Mens Black Classic Tracksuit", price: 2099.00, originalPrice: 5099.00, image: "https://images.unsplash.com/photo-1617019114580-58e139fa5289", rating: 4.2, category: "Tracksuits", popularityScore: 85 },
-        { id: 3, name: "Adidas White Zip-Front Tracksuit", price: 2990.00, originalPrice: 4999.00, image: "https://images.unsplash.com/photo-1618354691551-7a3f04edd6aa", rating: 3.8, category: "Tracksuits", popularityScore: 70 },
-        { id: 4, name: "Nike Mens Red Hoodie", price: 2499.00, originalPrice: 5999.00, image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990", rating: 4.5, category: "Hoodies & Sweatshirts", popularityScore: 95 },
-        { id: 5, name: "Puma Mens Grey Joggers", price: 1799.00, originalPrice: 3999.00, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", rating: 4.0, category: "Trackpants", popularityScore: 60 },
-        { id: 6, name: "Jordan Mens Green Tracksuit", price: 2999.00, originalPrice: 6999.00, image: "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f", rating: 4.3, category: "Tracksuits", popularityScore: 80 },
-        { id: 7, name: "Under Armour Mens Blue Jacket", price: 3499.00, originalPrice: 7999.00, image: "https://images.unsplash.com/photo-1551488831-00ddcb6c0a3a", rating: 4.1, category: "Jacket", popularityScore: 75 },
-        { id: 8, name: "Reebok Mens Black Hoodie", price: 2299.00, originalPrice: 5499.00, image: "https://images.unsplash.com/photo-1574182245586-1d2d5e47c62b", rating: 4.0, category: "Hoodies & Sweatshirts", popularityScore: 65 },
-        { id: 9, name: "Adidas Mens Yellow Tracksuit", price: 2799.00, originalPrice: 6499.00, image: "https://images.unsplash.com/photo-1618517351616-38fb9e37d39e", rating: 4.4, category: "Tracksuits", popularityScore: 88 },
-        { id: 10, name: "Nike Mens White Sneakers", price: 3999.00, originalPrice: 8999.00, image: "https://images.unsplash.com/photo-1607522370275-f14206abe5d3", rating: 4.6, category: "Others", popularityScore: 92 },
-        { id: 11, name: "Puma Mens Red Tracksuit", price: 2599.00, originalPrice: 5999.00, image: "https://images.unsplash.com/photo-1626240734709-95e39e7c6386", rating: 4.2, category: "Tracksuits", popularityScore: 78 },
-        { id: 12, name: "Jordan Mens Black Hoodie", price: 3199.00, originalPrice: 7499.00, image: "https://images.unsplash.com/photo-1590658006821-04f4008d5717", rating: 4.3, category: "Hoodies & Sweatshirts", popularityScore: 70 },
-        { id: 13, name: "Adidas Mens Grey Joggers", price: 1899.00, originalPrice: 4899.00, image: "https://images.unsplash.com/photo-1604272490182-1e5f0e3a0e32", rating: 3.9, category: "Trackpants", popularityScore: 55 },
-        { id: 14, name: "Nike Mens Blue Tracksuit", price: 2899.00, originalPrice: 6999.00, image: "https://images.unsplash.com/photo-1612902376491-7a8a99b424e8", rating: 4.1, category: "Tracksuits", popularityScore: 82 },
-        { id: 15, name: "Puma Mens White Jacket", price: 3299.00, originalPrice: 7999.00, image: "https://images.unsplash.com/photo-1600585153490-76fb20a0d33b", rating: 4.0, category: "Jacket", popularityScore: 68 }
-      ];
-
-      let filteredProducts = [...products];
-      let selectedCategory = null;
-
-      // Function to clean invalid cart data
-      function cleanCartData() {
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        cart = cart.filter(item => {
-          return item.id && Number(item.price) > 0 && Number(item.quantity) > 0;
-        });
-        localStorage.setItem('cart', JSON.stringify(cart));
-        return cart;
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/scripts.js"></script>
+  <script>
+    // Search bar toggle functionality
+    document.querySelector('.search-icon').addEventListener('click', function() {
+      const searchBar = document.querySelector('.search-bar');
+      searchBar.classList.toggle('active');
+      if (searchBar.classList.contains('active')) {
+        searchBar.focus();
       }
+    });
 
-      // Function to display products with animation
-      function displayProducts(productArray) {
-        const productList = document.getElementById('product-list');
-        productList.classList.add('fade');
-        setTimeout(() => {
-          productList.innerHTML = '';
-          console.log("Total products to display:", productArray.length);
-          productArray.forEach(product => {
-            console.log("Rendering product:", product.name);
-            const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
-            const productCard = `
-              <div class="col-md-4 mb-4 position-relative">
-                <div class="card h-100">
-                  <div class="product-card-container">
-                    <img src="${product.image}" class="card-img-top" alt="${product.name}" onload="console.log('Successfully loaded image for ${product.name}: ${product.image}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load image for ${product.name}: ${product.image}')">
-                    <a href="/products" class="btn btn-primary quick-view quick-view-overlay">QUICK VIEW</a>
-                  </div>
-                  <div class="discount-badge">${discount}%</div>
-                  <div class="card-body text-center">
-                    <h5 class="card-title">${product.name}</h5>
-                    <div class="star-rating mb-2">
-                      ${generateStarRating(product.rating)}
-                    </div>
-                    <p class="card-text">
-                      <span class="text-decoration-line-through text-muted">₹${product.originalPrice.toFixed(2)}</span>
-                      <span class="text-danger fw-bold">₹${product.price.toFixed(2)}</span>
-                    </p>
-                    <button class="btn btn-primary add-to-cart" data-id="${product.id}">Add to Cart</button>
-                  </div>
+    // Cart sidebar toggle functionality
+    const cartTrigger = document.getElementById('cart-trigger');
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const shadowLayer = document.getElementById('cd-shadow-layer');
+    const closeCartBtn = document.querySelector('.close-cart-sidebar');
+
+    cartTrigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      cleanCartData();
+      cartSidebar.classList.add('active');
+      shadowLayer.classList.add('active');
+      updateCartTotal();
+      updateCartSidebar();
+    });
+
+    closeCartBtn.addEventListener('click', () => {
+      cartSidebar.classList.remove('active');
+      shadowLayer.classList.remove('active');
+    });
+
+    shadowLayer.addEventListener('click', () => {
+      cartSidebar.classList.remove('active');
+      shadowLayer.classList.remove('active');
+    });
+
+    // Product data with multiple images
+    const products = [
+      { 
+        id: 1, 
+        name: "Adidas Mens Blue Classic Tracksuit", 
+        price: 1999.00, 
+        originalPrice: 4999.00, 
+        images: [
+          "https://images.unsplash.com/photo-1599058917212-d750089bc07e", // Front view
+          "https://images.unsplash.com/photo-1617019114580-58e139fa5289", // Side view
+          "https://images.unsplash.com/photo-1618354691551-7a3f04edd6aa"  // Back view
+        ], 
+        rating: 4.0, 
+        category: "Tracksuits", 
+        popularityScore: 90, 
+        shortDescription: "Comfortable and stylish blue tracksuit, perfect for casual wear or workouts.", 
+        fit: "Regular", 
+        bottom: "Drawcord-adjustable", 
+        material: "100% Polyester", 
+        hemCuff: "Ribbed", 
+        colour: "Blue/White", 
+        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)", "XXL (44 inches)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 2, 
+        name: "Adidas Mens Black Classic Tracksuit", 
+        price: 2099.00, 
+        originalPrice: 5099.00, 
+        images: [
+          "https://images.unsplash.com/photo-1617019114580-58e139fa5289", // Front view
+          "https://images.unsplash.com/photo-1599058917212-d750089bc07e", // Side view
+          "https://images.unsplash.com/photo-1618354691551-7a3f04edd6aa"  // Back view
+        ], 
+        rating: 4.2, 
+        category: "Tracksuits", 
+        popularityScore: 85, 
+        shortDescription: "Sleek black tracksuit with a modern fit, ideal for active lifestyles.", 
+        fit: "Regular", 
+        bottom: "Drawcord-adjustable", 
+        material: "100% Polyester", 
+        hemCuff: "Ribbed", 
+        colour: "Black/White", 
+        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)", "XXL (44 inches)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 3, 
+        name: "Adidas White Zip-Front Tracksuit", 
+        price: 2990.00, 
+        originalPrice: 4999.00, 
+        images: [
+          "https://images.unsplash.com/photo-1618354691551-7a3f04edd6aa", // Front view
+          "https://images.unsplash.com/photo-1599058917212-d750089bc07e", // Side view
+          "https://images.unsplash.com/photo-1617019114580-58e139fa5289"  // Back view
+        ], 
+        rating: 3.8, 
+        category: "Tracksuits", 
+        popularityScore: 70, 
+        shortDescription: "White tracksuit with zip-front design, great for sporty looks.", 
+        fit: "Regular", 
+        bottom: "Elastic", 
+        material: "100% Polyester", 
+        hemCuff: "Ribbed", 
+        colour: "White/Black", 
+        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)", "XXL (44 inches)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 4, 
+        name: "Nike Mens Red Hoodie", 
+        price: 2499.00, 
+        originalPrice: 5999.00, 
+        images: [
+          "https://images.unsplash.com/photo-1618354691373-d851c5c3a990", // Front view
+          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", // Side view
+          "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f"  // Back view
+        ], 
+        rating: 4.5, 
+        category: "Hoodies & Sweatshirts", 
+        popularityScore: 95, 
+        shortDescription: "Vibrant red hoodie with soft fleece lining for ultimate comfort.", 
+        fit: "Relaxed", 
+        bottom: "Ribbed", 
+        material: "Cotton Blend", 
+        hemCuff: "Ribbed", 
+        colour: "Red", 
+        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 5, 
+        name: "Puma Mens Grey Joggers", 
+        price: 1799.00, 
+        originalPrice: 3999.00, 
+        images: [
+          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", // Front view
+          "https://images.unsplash.com/photo-1618354691373-d851c5c3a990", // Side view
+          "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f"  // Back view
+        ], 
+        rating: 4.0, 
+        category: "Trackpants", 
+        popularityScore: 60, 
+        shortDescription: "Relaxed grey joggers, perfect for lounging or light exercise.", 
+        fit: "Tapered", 
+        bottom: "Elastic", 
+        material: "Cotton Blend", 
+        hemCuff: "Elastic", 
+        colour: "Grey", 
+        sizes: ["M (32 inches)", "L (34 inches)", "XL (36 inches)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 6, 
+        name: "Jordan Mens Green Tracksuit", 
+        price: 2999.00, 
+        originalPrice: 6999.00, 
+        images: [
+          "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f", // Front view
+          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", // Side view
+          "https://images.unsplash.com/photo-1618354691373-d851c5c3a990"  // Back view
+        ], 
+        rating: 4.3, 
+        category: "Tracksuits", 
+        popularityScore: 80, 
+        shortDescription: "Bold green tracksuit with Jordan branding, designed for style and performance.", 
+        fit: "Regular", 
+        bottom: "Drawcord-adjustable", 
+        material: "100% Polyester", 
+        hemCuff: "Ribbed", 
+        colour: "Green/White", 
+        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 7, 
+        name: "Under Armour Mens Blue Jacket", 
+        price: 3499.00, 
+        originalPrice: 7999.00, 
+        images: [
+          "https://images.unsplash.com/photo-1551488831-00ddcb6c0a3a", // Front view
+          "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f", // Side view
+          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c"  // Back view
+        ], 
+        rating: 4.1, 
+        category: "Jacket", 
+        popularityScore: 75, 
+        shortDescription: "Lightweight blue jacket with weather-resistant fabric.", 
+        fit: "Fitted", 
+        bottom: "Elastic", 
+        material: "Polyester Blend", 
+        hemCuff: "Elastic", 
+        colour: "Blue", 
+        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 8, 
+        name: "Reebok Mens Black Hoodie", 
+        price: 2299.00, 
+        originalPrice: 5499.00, 
+        images: [
+          "https://images.unsplash.com/photo-1574182245586-1d2d5e47c62b", // Front view
+          "https://images.unsplash.com/photo-1551488831-00ddcb6c0a3a", // Side view
+          "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f"  // Back view
+        ], 
+        rating: 4.0, 
+        category: "Hoodies & Sweatshirts", 
+        popularityScore: 65, 
+        shortDescription: "Classic black hoodie with a minimalist design for everyday wear.", 
+        fit: "Relaxed", 
+        bottom: "Ribbed", 
+        material: "Cotton Blend", 
+        hemCuff: "Ribbed", 
+        colour: "Black", 
+        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 9, 
+        name: "Adidas Mens Yellow Tracksuit", 
+        price: 2799.00, 
+        originalPrice: 6499.00, 
+        images: [
+          "https://images.unsplash.com/photo-1618517351616-38fb9e37d39e", // Front view
+          "https://images.unsplash.com/photo-1574182245586-1d2d5e47c62b", // Side view
+          "https://images.unsplash.com/photo-1551488831-00ddcb6c0a3a"  // Back view
+        ], 
+        rating: 4.4, 
+        category: "Tracksuits", 
+        popularityScore: 88, 
+        shortDescription: "Bright yellow tracksuit for a standout athletic look.", 
+        fit: "Regular", 
+        bottom: "Drawcord-adjustable", 
+        material: "100% Polyester", 
+        hemCuff: "Ribbed", 
+        colour: "Yellow/Black", 
+        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)", "XXL (44 inches)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 10, 
+        name: "Nike Mens White Sneakers", 
+        price: 3999.00, 
+        originalPrice: 8999.00, 
+        images: [
+          "https://images.unsplash.com/photo-1607522370275-f14206abe5d3", // Front view
+          "https://images.unsplash.com/photo-1618517351616-38fb9e37d39e", // Side view
+          "https://images.unsplash.com/photo-1574182245586-1d2d5e47c62b"  // Back view
+        ], 
+        rating: 4.6, 
+        category: "Others", 
+        popularityScore: 92, 
+        shortDescription: "Crisp white sneakers with cushioned soles for all-day comfort.", 
+        fit: "Standard", 
+        bottom: "N/A", 
+        material: "Leather/Synthetic", 
+        hemCuff: "N/A", 
+        colour: "White", 
+        sizes: ["M (9 US)", "L (10 US)", "XL (11 US)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 11, 
+        name: "Puma Mens Red Tracksuit", 
+        price: 2599.00, 
+        originalPrice: 5999.00, 
+        images: [
+          "https://images.unsplash.com/photo-1626240734709-95e39e7c6386", // Front view
+          "https://images.unsplash.com/photo-1607522370275-f14206abe5d3", // Side view
+          "https://images.unsplash.com/photo-1618517351616-38fb9e37d39e"  // Back view
+        ], 
+        rating: 4.2, 
+        category: "Tracksuits", 
+        popularityScore: 78, 
+        shortDescription: "Dynamic red tracksuit, perfect for sports and casual outings.", 
+        fit: "Regular", 
+        bottom: "Drawcord-adjustable", 
+        material: "100% Polyester", 
+        hemCuff: "Ribbed", 
+        colour: "Red/White", 
+        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 12, 
+        name: "Jordan Mens Black Hoodie", 
+        price: 3199.00, 
+        originalPrice: 7499.00, 
+        images: [
+          "https://images.unsplash.com/photo-1590658006821-04f4008d5717", // Front view
+          "https://images.unsplash.com/photo-1626240734709-95e39e7c6386", // Side view
+          "https://images.unsplash.com/photo-1607522370275-f14206abe5d3"  // Back view
+        ], 
+        rating: 4.3, 
+        category: "Hoodies & Sweatshirts", 
+        popularityScore: 70, 
+        shortDescription: "Premium black hoodie with iconic Jordan logo.", 
+        fit: "Relaxed", 
+        bottom: "Ribbed", 
+        material: "Cotton Blend", 
+        hemCuff: "Ribbed", 
+        colour: "Black", 
+        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 13, 
+        name: "Adidas Mens Grey Joggers", 
+        price: 1899.00, 
+        originalPrice: 4899.00, 
+        images: [
+          "https://images.unsplash.com/photo-1604272490182-1e5f0e3a0e32", // Front view
+          "https://images.unsplash.com/photo-1590658006821-04f4008d5717", // Side view
+          "https://images.unsplash.com/photo-1626240734709-95e39e7c6386"  // Back view
+        ], 
+        rating: 3.9, 
+        category: "Trackpants", 
+        popularityScore: 55, 
+        shortDescription: "Soft grey joggers with a tapered fit for a sleek look.", 
+        fit: "Tapered", 
+        bottom: "Elastic", 
+        material: "Cotton Blend", 
+        hemCuff: "Elastic", 
+        colour: "Grey", 
+        sizes: ["M (32 inches)", "L (34 inches)", "XL (36 inches)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 14, 
+        name: "Nike Mens Blue Tracksuit", 
+        price: 2899.00, 
+        originalPrice: 6999.00, 
+        images: [
+          "https://images.unsplash.com/photo-1612902376491-7a8a99b424e8", // Front view
+          "https://images.unsplash.com/photo-1604272490182-1e5f0e3a0e32", // Side view
+          "https://images.unsplash.com/photo-1590658006821-04f4008d5717"  // Back view
+        ], 
+        rating: 4.1, 
+        category: "Tracksuits", 
+        popularityScore: 82, 
+        shortDescription: "Blue tracksuit with Nike’s signature comfort and style.", 
+        fit: "Regular", 
+        bottom: "Drawcord-adjustable", 
+        material: "100% Polyester", 
+        hemCuff: "Ribbed", 
+        colour: "Blue/White", 
+        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
+        sku: "N/A" 
+      },
+      { 
+        id: 15, 
+        name: "Puma Mens White Jacket", 
+        price: 3299.00, 
+        originalPrice: 7999.00, 
+        images: [
+          "https://images.unsplash.com/photo-1600585153490-76fb20a0d33b", // Front view
+          "https://images.unsplash.com/photo-1612902376491-7a8a99b424e8", // Side view
+          "https://images.unsplash.com/photo-1604272490182-1e5f0e3a0e32"  // Back view
+        ], 
+        rating: 4.0, 
+        category: "Jacket", 
+        popularityScore: 68, 
+        shortDescription: "White jacket with a modern design, ideal for cool weather.", 
+        fit: "Fitted", 
+        bottom: "Elastic", 
+        material: "Polyester Blend", 
+        hemCuff: "Elastic", 
+        colour: "White", 
+        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
+        sku: "N/A" 
+      }
+    ];
+
+    let filteredProducts = [...products];
+    let selectedCategory = null;
+
+    // Function to clean invalid cart data
+    function cleanCartData() {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.filter(item => {
+        return item.id && Number(item.price) > 0 && Number(item.quantity) > 0 && item.name && item.images && item.size;
+      });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      return cart;
+    }
+
+    // Function to remove a specific item from the cart
+    function removeCartItem(id, size) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.filter(item => !(item.id === id && item.size === size));
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartTotal();
+      updateCartSidebar();
+    }
+
+    // Function to display products with animation
+    function displayProducts(productArray) {
+      const productList = document.getElementById('product-list');
+      productList.classList.add('fade');
+      setTimeout(() => {
+        productList.innerHTML = '';
+        console.log("Total products to display:", productArray.length);
+        productArray.forEach(product => {
+          console.log("Rendering product:", product.name);
+          const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+          
+          // Check if the product is the one with ID 1 to display three images
+          let imageSection;
+          if (product.id === 1) {
+            imageSection = `
+              <div class="stacked-images">
+                <div>
+                  <img src="${product.images[0]}" alt="${product.name} Front" onload="console.log('Successfully loaded front image for ${product.name}: ${product.images[0]}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load front image for ${product.name}: ${product.images[0]}')">
+                  <p>Front</p>
+                </div>
+                <div>
+                  <img src="${product.images[1]}" alt="${product.name} Side" onload="console.log('Successfully loaded side image for ${product.name}: ${product.images[1]}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load side image for ${product.name}: ${product.images[1]}')">
+                  <p>Side</p>
+                </div>
+                <div>
+                  <img src="${product.images[2]}" alt="${product.name} Back" onload="console.log('Successfully loaded back image for ${product.name}: ${product.images[2]}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load back image for ${product.name}: ${product.images[2]}')">
+                  <p>Back</p>
                 </div>
               </div>
             `;
-            productList.innerHTML += productCard;
-          });
-          document.getElementById('results-count').textContent = `Showing all ${productArray.length} results`;
-          productList.classList.remove('fade');
+          } else {
+            imageSection = `
+              <div class="product-card-container">
+                <img src="${product.images[0]}" class="card-img-top" alt="${product.name}" onload="console.log('Successfully loaded image for ${product.name}: ${product.images[0]}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load image for ${product.name}: ${product.images[0]}')">
+                <button class="btn btn-primary quick-view quick-view-overlay" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-id="${product.id}" data-name="${product.name}" data-price="${product.price}" data-original-price="${product.originalPrice}" data-images='${JSON.stringify(product.images)}' data-fit="${product.fit}" data-bottom="${product.bottom}" data-material="${product.material}" data-hem-cuff="${product.hemCuff}" data-colour="${product.colour}" data-sizes='${JSON.stringify(product.sizes)}' data-sku="${product.sku}" data-category="${product.category}" data-discount="${discount}">QUICK VIEW</button>
+              </div>
+            `;
+          }
 
-          // Add event listeners to Add to Cart buttons
-          document.querySelectorAll('.add-to-cart').forEach(button => {
-            button.addEventListener('click', () => {
-              const id = parseInt(button.dataset.id);
+          const productCard = `
+            <div class="col-md-4 mb-4 position-relative">
+              <div class="card h-100">
+                ${imageSection}
+                <div class="discount-badge">${discount}%</div>
+                <div class="card-body text-center">
+                  <h5 class="card-title">${product.name}</h5>
+                  <div class="star-rating mb-2">
+                    ${generateStarRating(product.rating)}
+                  </div>
+                  <p class="card-text">
+                    <span class="text-decoration-line-through text-muted">₹${product.originalPrice.toFixed(2)}</span>
+                    <span class="text-danger fw-bold">₹${product.price.toFixed(2)}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          `;
+          productList.innerHTML += productCard;
+        });
+        document.getElementById('results-count').textContent = `Showing all ${productArray.length} results`;
+        productList.classList.remove('fade');
+
+        // Add event listeners to Quick View buttons
+        document.querySelectorAll('.quick-view').forEach(button => {
+          button.addEventListener('click', () => {
+            const id = parseInt(button.dataset.id);
+            const name = button.dataset.name;
+            const price = parseFloat(button.dataset.price);
+            const originalPrice = parseFloat(button.dataset.originalPrice);
+            const images = JSON.parse(button.dataset.images);
+            const fit = button.dataset.fit;
+            const bottom = button.dataset.bottom;
+            const material = button.dataset.material;
+            const hemCuff = button.dataset.hemCuff;
+            const colour = button.dataset.colour;
+            const sizes = JSON.parse(button.dataset.sizes);
+            const sku = button.dataset.sku;
+            const category = button.dataset.category;
+            const discount = button.dataset.discount;
+
+            // Populate modal
+            const imagesContainer = document.getElementById('quick-view-images');
+            imagesContainer.innerHTML = `
+              <div>
+                <img src="${images[0]}" alt="${name} Front">
+                <p class="text-center mb-2">Front</p>
+              </div>
+              <div>
+                <img src="${images[1]}" alt="${name} Back">
+                <p class="text-center mb-2">Back</p>
+              </div>
+              <div>
+                <img src="${images[2]}" alt="${name} Side">
+                <p class="text-center mb-2">Side</p>
+              </div>
+            `;
+
+            document.getElementById('quick-view-title').textContent = name;
+            document.getElementById('quick-view-original-price').textContent = `₹${originalPrice.toFixed(2)} `;
+            document.getElementById('quick-view-discounted-price').textContent = `₹${price.toFixed(2)}`;
+            document.getElementById('quick-view-discount').textContent = `-${discount}%`;
+            document.getElementById('quick-view-fit').textContent = fit;
+            document.getElementById('quick-view-bottom').textContent = bottom;
+            document.getElementById('quick-view-material').textContent = material;
+            document.getElementById('quick-view-hem-cuff').textContent = hemCuff;
+            document.getElementById('quick-view-colour').textContent = colour;
+            document.getElementById('quick-view-sku').textContent = sku;
+            document.getElementById('quick-view-category').textContent = category;
+            document.getElementById('quick-view-add-to-cart').dataset.id = id;
+
+            // Reset quantity
+            const quantityInput = document.getElementById('quick-view-quantity');
+            quantityInput.value = 1;
+
+            // Reset the "Add to Cart" button text and behavior
+            const addToCartButton = document.getElementById('quick-view-add-to-cart');
+            addToCartButton.textContent = "ADD TO CART";
+            addToCartButton.onclick = null; // Remove any existing event listeners
+
+            // Populate sizes
+            const sizesContainer = document.getElementById('quick-view-sizes');
+            sizesContainer.innerHTML = '';
+            sizes.forEach((size, index) => {
+              const sizeOption = `
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input quick-view-size" type="radio" name="quickViewSize" id="size-${index}" value="${size}" ${index === 0 ? 'checked' : ''}>
+                  <label class="form-check-label" for="size-${index}">${size}</label>
+                </div>
+              `;
+              sizesContainer.innerHTML += sizeOption;
+            });
+
+            // Quantity selector functionality
+            const decreaseBtn = document.getElementById('quick-view-decrease');
+            const increaseBtn = document.getElementById('quick-view-increase');
+            decreaseBtn.addEventListener('click', () => {
+              let qty = parseInt(quantityInput.value);
+              if (qty > 1) {
+                quantityInput.value = qty - 1;
+              }
+            });
+            increaseBtn.addEventListener('click', () => {
+              let qty = parseInt(quantityInput.value);
+              quantityInput.value = qty + 1;
+            });
+
+            // Add event listener to "Add to Cart" button with the new flow
+            addToCartButton.addEventListener('click', function addToCartHandler() {
+              const id = parseInt(addToCartButton.dataset.id);
               const product = products.find(p => p.id === id);
               const cart = JSON.parse(localStorage.getItem('cart')) || [];
-              const existingItem = cart.find(item => item.id === id);
+              const selectedSize = document.querySelector('input[name="quickViewSize"]:checked').value;
+              const quantity = parseInt(document.getElementById('quick-view-quantity').value);
+              const existingItem = cart.find(item => item.id === id && item.size === selectedSize);
 
               if (existingItem) {
-                existingItem.quantity = (existingItem.quantity || 1) + 1;
+                existingItem.quantity = (existingItem.quantity || 1) + quantity;
               } else {
-                cart.push({ ...product, quantity: 1 });
+                cart.push({ ...product, quantity: quantity, size: selectedSize });
               }
 
               localStorage.setItem('cart', JSON.stringify(cart));
               updateCartTotal();
               updateCartSidebar();
-              cartSidebar.classList.add('active');
-              shadowLayer.classList.add('active');
+
+              // Change button text to "Go to Cart" and update its behavior
+              addToCartButton.textContent = "GO TO CART";
+              addToCartButton.removeEventListener('click', addToCartHandler); // Remove the "Add to Cart" handler
+              addToCartButton.addEventListener('click', () => {
+                window.location.href = '/cart'; // Redirect to cart page
+              });
             });
           });
-        }, 300);
-      }
+        });
+      }, 300);
+    }
 
-      // Function to generate star rating
-      function generateStarRating(rating) {
-        let stars = '';
-        for (let i = 0; i < 5; i++) {
-          if (i < Math.floor(rating)) {
-            stars += '<i class="bi bi-star-fill"></i>';
-          } else {
-            stars += '<i class="bi bi-star"></i>';
-          }
-        }
-        return stars;
-      }
-
-      // Update cart total in navbar
-      function updateCartTotal() {
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const total = cart.reduce((sum, item) => {
-          const price = Number(item.price) || 0;
-          const quantity = Number(item.quantity) || 1;
-          return sum + price * quantity;
-        }, 0);
-        document.getElementById('cart-total-nav').textContent = isNaN(total) ? '0.00' : total.toFixed(2);
-      }
-
-      // Update cart sidebar content
-      function updateCartSidebar() {
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const cartItemsContainer = document.getElementById('cart-sidebar-items');
-        const cartTotalElement = document.getElementById('cart-sidebar-total');
-        cartItemsContainer.innerHTML = '';
-
-        if (cart.length === 0) {
-          cartItemsContainer.innerHTML = '<p class="text-center">Your cart is empty.</p>';
+    // Function to generate star rating
+    function generateStarRating(rating) {
+      let stars = '';
+      for (let i = 0; i < 5; i++) {
+        if (i < Math.floor(rating)) {
+          stars += '<i class="bi bi-star-fill"></i>';
         } else {
-          cart.forEach(item => {
-            const price = Number(item.price) || 0;
-            const quantity = Number(item.quantity) || 1;
-            const cartItem = `
-              <div class="cart-item d-flex align-items-center mb-3">
-                <img src="${item.image}" alt="${item.name}" class="cart-item-img">
-                <div class="cart-item-details ms-3">
-                  <h6>${item.name}</h6>
-                  <p>₹${price.toFixed(2)} x ${quantity}</p>
-                </div>
-              </div>
-            `;
-            cartItemsContainer.innerHTML += cartItem;
-          });
+          stars += '<i class="bi bi-star"></i>';
         }
+      }
+      return stars;
+    }
 
-        const total = cart.reduce((sum, item) => {
-          const price = Number(item.price) || 0;
-          const quantity = Number(item.quantity) || 1;
-          return sum + price * quantity;
-        }, 0);
-        cartTotalElement.textContent = isNaN(total) ? '0.00' : total.toFixed(2);
+    // Update cart total in navbar
+    function updateCartTotal() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const total = cart.reduce((sum, item) => {
+        const price = Number(item.price) || 0;
+        const quantity = Number(item.quantity) || 1;
+        return sum + price * quantity;
+      }, 0);
+      document.getElementById('cart-total-nav').textContent = isNaN(total) ? '0.00' : total.toFixed(2);
+    }
+
+    // Update cart sidebar content
+    function updateCartSidebar() {
+      const cart = cleanCartData(); // Ensure cart data is clean
+      const cartItemsContainer = document.getElementById('cart-sidebar-items');
+      const cartTotalElement = document.getElementById('cart-sidebar-total');
+      cartItemsContainer.innerHTML = ''; // Clear the container
+
+      if (!cart || cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p class="text-center">Your cart is empty.</p>';
+        cartTotalElement.textContent = '0.00';
+        return;
       }
 
-      // Populate categories dynamically
-      function populateCategories() {
-        const categoryList = document.getElementById('category-list');
-        const categories = [
-          "Clothing", "Hoodies & Sweatshirts", "Tracksuits", "Jacket", "Fleece Tracksuit",
-          "Polo T Shirt", "Women Jacket", "Women Leggings", "Mens Shorts", "Trackpants", "Others"
-        ];
-        categories.forEach(category => {
-          const count = products.filter(product => product.category === category).length;
-          const li = document.createElement('li');
-          li.innerHTML = `<a href="#" data-category="${category}">${category} (${count})</a>`;
-          categoryList.appendChild(li);
+      // Render each cart item with remove button
+      cart.forEach(item => {
+        const price = Number(item.price) || 0;
+        const quantity = Number(item.quantity) || 1;
+        const image = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : 'https://images.unsplash.com/photo-1556906781-9a412961c28c'; // Fallback image
+        const cartItem = `
+          <div class="cart-item mb-3">
+            <button class="remove-cart-item" data-id="${item.id}" data-size="${item.size}">❌</button>
+            <img src="${image}" alt="${item.name || 'Product'}" class="cart-item-img" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c';">
+            <div class="cart-item-details ms-3">
+              <h6>${item.name || 'Unknown Product'}</h6>
+              <p>Size: ${item.size || 'N/A'}</p>
+              <p class="text-danger">₹${price.toFixed(2)} x ${quantity}</p>
+            </div>
+          </div>
+        `;
+        cartItemsContainer.innerHTML += cartItem;
+      });
+
+      // Add event listeners to remove buttons
+      document.querySelectorAll('.remove-cart-item').forEach(button => {
+        button.addEventListener('click', () => {
+          const id = parseInt(button.dataset.id);
+          const size = button.dataset.size;
+          removeCartItem(id, size);
         });
+      });
 
-        // Add event listeners to category links
-        categoryList.querySelectorAll('a').forEach(link => {
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-            selectedCategory = link.dataset.category;
-            applyFilters();
-          });
+      // Calculate and update total
+      const total = cart.reduce((sum, item) => {
+        const price = Number(item.price) || 0;
+        const quantity = Number(item.quantity) || 1;
+        return sum + price * quantity;
+      }, 0);
+      cartTotalElement.textContent = total.toFixed(2);
+    }
+
+    // Populate categories dynamically
+    function populateCategories() {
+      const categoryList = document.getElementById('category-list');
+      const categories = [
+        "Clothing", "Hoodies & Sweatshirts", "Tracksuits", "Jacket", "Fleece Tracksuit",
+        "Polo T Shirt", "Women Jacket", "Women Leggings", "Mens Shorts", "Trackpants", "Others"
+      ];
+      categories.forEach(category => {
+        const count = products.filter(product => product.category === category).length;
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="#" data-category="${category}">${category} (${count})</a>`;
+        categoryList.appendChild(li);
+      });
+
+      // Add event listeners to category links
+      categoryList.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          selectedCategory = link.dataset.category;
+          applyFilters();
         });
+      });
+    }
+
+    // Dual price range filter
+    const minPriceRange = document.getElementById('min-price');
+    const maxPriceRange = document.getElementById('max-price');
+    const minPriceValue = document.getElementById('min-price-value');
+    const maxPriceValue = document.getElementById('max-price-value');
+    const filterBtn = document.querySelector('.filter-btn');
+
+    minPriceRange.addEventListener('input', () => {
+      let minVal = parseInt(minPriceRange.value);
+      let maxVal = parseInt(maxPriceRange.value);
+      if (minVal > maxVal - 100) {
+        minPriceRange.value = maxVal - 100;
+        minVal = maxVal - 100;
       }
+      minPriceValue.textContent = minVal;
+    });
 
-      // Dual price range filter
-      const minPriceRange = document.getElementById('min-price');
-      const maxPriceRange = document.getElementById('max-price');
-      const minPriceValue = document.getElementById('min-price-value');
-      const maxPriceValue = document.getElementById('max-price-value');
-      const filterBtn = document.querySelector('.filter-btn');
-
-      minPriceRange.addEventListener('input', () => {
-        let minVal = parseInt(minPriceRange.value);
-        let maxVal = parseInt(maxPriceRange.value);
-        if (minVal > maxVal - 100) {
-          minPriceRange.value = maxVal - 100;
-          minVal = maxVal - 100;
-        }
-        minPriceValue.textContent = minVal;
-      });
-
-      maxPriceRange.addEventListener('input', () => {
-        let minVal = parseInt(minPriceRange.value);
-        let maxVal = parseInt(maxPriceRange.value);
-        if (maxVal < minVal + 100) {
-          maxPriceRange.value = minVal + 100;
-          maxVal = minVal + 100;
-        }
-        maxPriceValue.textContent = maxVal;
-      });
-
-      // Apply filters
-      function applyFilters() {
-        const minPrice = parseInt(minPriceRange.value);
-        const maxPrice = parseInt(maxPriceRange.value);
-        filteredProducts = products.filter(product => {
-          const inPriceRange = product.price >= minPrice && product.price <= maxPrice;
-          const inCategory = selectedCategory ? product.category === selectedCategory : true;
-          return inPriceRange && inCategory;
-        });
-        applySorting();
+    maxPriceRange.addEventListener('input', () => {
+      let minVal = parseInt(minPriceRange.value);
+      let maxVal = parseInt(maxPriceRange.value);
+      if (maxVal < minVal + 100) {
+        maxPriceRange.value = minVal + 100;
+        maxVal = minVal + 100;
       }
+      maxPriceValue.textContent = maxVal;
+    });
 
-      filterBtn.addEventListener('click', applyFilters);
+    // Apply filters
+    function applyFilters() {
+      const minPrice = parseInt(minPriceRange.value);
+      const maxPrice = parseInt(maxPriceRange.value);
+      filteredProducts = products.filter(product => {
+        const inPriceRange = product.price >= minPrice && product.price <= maxPrice;
+        const inCategory = selectedCategory ? product.category === selectedCategory : true;
+        return inPriceRange && inCategory;
+      });
+      applySorting();
+    }
 
-      // Sorting functionality
-      const sortOptions = document.getElementById('sort-options');
-      sortOptions.value = 'popularity'; // Set default sorting
+    filterBtn.addEventListener('click', applyFilters);
 
-      function applySorting() {
-        const sortValue = sortOptions.value;
-        let sortedProducts = [...filteredProducts];
-        if (sortValue === 'popularity') {
-          sortedProducts.sort((a, b) => b.popularityScore - a.popularityScore);
-        } else if (sortValue === 'rating') {
-          sortedProducts.sort((a, b) => b.rating - a.rating);
-        } else if (sortValue === 'latest') {
-          sortedProducts.sort((a, b) => b.id - a.id);
-        } else if (sortValue === 'price-low') {
-          sortedProducts.sort((a, b) => a.price - b.price);
-        } else if (sortValue === 'price-high') {
-          sortedProducts.sort((a, b) => b.price - a.price);
-        }
-        displayProducts(sortedProducts);
+    // Sorting functionality
+    const sortOptions = document.getElementById('sort-options');
+    sortOptions.value = 'popularity'; // Set default sorting
+
+    function applySorting() {
+      const sortValue = sortOptions.value;
+      let sortedProducts = [...filteredProducts];
+      if (sortValue === 'popularity') {
+        sortedProducts.sort((a, b) => b.popularityScore - a.popularityScore);
+      } else if (sortValue === 'rating') {
+        sortedProducts.sort((a, b) => b.rating - a.rating);
+      } else if (sortValue === 'latest') {
+        sortedProducts.sort((a, b) => b.id - a.id);
+      } else if (sortValue === 'price-low') {
+        sortedProducts.sort((a, b) => a.price - b.price);
+      } else if (sortValue === 'price-high') {
+        sortedProducts.sort((a, b) => b.price - a.price);
       }
+      displayProducts(sortedProducts);
+    }
 
-      sortOptions.addEventListener('change', applySorting);
+    sortOptions.addEventListener('change', applySorting);
 
-      // Sidebar toggle for mobile
-      const sidebarToggle = document.querySelector('.sidebar-toggle');
-      const sidebar = document.getElementById('sidebar');
-      sidebarToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-      });
+    // Sidebar toggle for mobile
+    const sidebarToggle = document.querySelector('.sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
 
-      // Load products, categories, and cart total on page load
-      document.addEventListener('DOMContentLoaded', () => {
-        populateCategories();
-        applySorting();
-        cleanCartData();
-        updateCartTotal();
-        updateCartSidebar();
-      });
-    </script>
-  </body>
+    // Load products, categories, and cart total on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      populateCategories();
+      applySorting();
+      cleanCartData();
+      updateCartTotal();
+      updateCartSidebar();
+    });
+  </script>
+</body>
 </html>

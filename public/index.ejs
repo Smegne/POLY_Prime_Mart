@@ -7,6 +7,229 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="/styles.css">
+  <style>
+    /* Hero Section */
+    .hero-section {
+      position: relative;
+      background: url('https://images.unsplash.com/photo-1445205170230-0532119d4274') no-repeat center center;
+      background-size: cover;
+      color: white;
+      padding: 100px 0;
+      text-align: center;
+    }
+
+    .hero-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .hero-model {
+      position: absolute;
+      width: 200px;
+      height: auto;
+      object-fit: cover;
+      opacity: 0.8;
+    }
+
+    .model-1 { top: 10%; left: 10%; }
+    .model-2 { top: 20%; right: 10%; }
+    .model-3 { bottom: 10%; left: 15%; }
+    .model-4 { bottom: 15%; right: 15%; }
+
+    .banner-container {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 10px;
+      transition: transform 0.5s ease;
+    }
+
+    .banner-container.extended {
+      transform: scale(1.1);
+    }
+
+    .snowflake {
+      position: absolute;
+      color: white;
+      font-size: 1em;
+      font-family: Arial, sans-serif;
+      text-shadow: 0 0 5px black;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
+
+    /* Product Section */
+    .product-card-container {
+      position: relative;
+    }
+
+    .card-img-top {
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .quick-view-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .product-card-container:hover .quick-view-overlay {
+      opacity: 1;
+    }
+
+    .product-card-container:hover .card-img-top {
+      opacity: 0.8;
+    }
+
+    .discount-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #ff6200;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.9rem;
+    }
+
+    /* Cart Sidebar Styles */
+    #cart-sidebar {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 400px;
+      height: 100%;
+      background-color: #fff;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+      transition: right 0.3s ease;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    #cart-sidebar.active {
+      right: 0;
+    }
+
+    .cart-sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .cart-sidebar-header h2 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .close-cart-sidebar {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .cart-item {
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .cart-item-img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+    }
+
+    .cart-item-details h6 {
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+
+    .cart-item-details p {
+      font-size: 0.9rem;
+      color: #ff6200;
+      margin-bottom: 5px;
+    }
+
+    .cart-item-details .quantity {
+      font-size: 0.9rem;
+      color: #333;
+    }
+
+    .cart-sidebar-footer {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    .cart-sidebar-footer p {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    #cd-shadow-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    #cd-shadow-layer.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Remove button style */
+    .remove-cart-item {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #ff0000;
+      margin-right: 10px;
+    }
+
+    .remove-cart-item:hover {
+      color: #cc0000;
+    }
+
+    @media (max-width: 991px) {
+      #cart-sidebar {
+        width: 100%;
+        right: -100%;
+      }
+
+      #cart-sidebar.active {
+        right: 0;
+      }
+    }
+  </style>
 </head>
 <body style="padding-top: 70px;">
   <!-- Navbar -->
@@ -39,9 +262,7 @@
               <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
             </li>
             <li class="nav-item">
-              <span class="nav-link"> <li class="nav-item">
-                <span class="nav-link">My Account</span>
-              </li></span>
+              <span class="nav-link">My Account</span>
             </li>
             <li class="nav-item">
               <div class="search-container">
@@ -76,7 +297,7 @@
   <div id="cart-sidebar">
     <div class="cart-sidebar-header">
       <h2>Your Cart</h2>
-      <button class="close-cart-sidebar">&times;</button>
+      <button class="close-cart-sidebar">×</button>
     </div>
     <div id="cart-sidebar-items"></div>
     <div class="cart-sidebar-footer">
@@ -260,6 +481,9 @@
       setTimeout(() => {
         banner.classList.add('extended');
       }, 500);
+      cleanCartData();
+      updateCartTotal();
+      updateCartSidebar();
     });
 
     // Cart sidebar toggle functionality
@@ -270,8 +494,10 @@
 
     cartTrigger.addEventListener('click', (e) => {
       e.preventDefault();
+      cleanCartData();
       cartSidebar.classList.add('active');
       shadowLayer.classList.add('active');
+      updateCartTotal();
       updateCartSidebar();
     });
 
@@ -303,6 +529,25 @@
       { id: 14, name: "Nike Mens Blue Tracksuit", price: 2899.00, originalPrice: 6999.00, image: "https://images.unsplash.com/photo-1612902376491-7a8a99b424e8" },
       { id: 15, name: "Puma Mens White Jacket", price: 3299.00, originalPrice: 7999.00, image: "https://images.unsplash.com/photo-1600585153490-76fb20a0d33b" }
     ];
+
+    // Function to clean invalid cart data
+    function cleanCartData() {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.filter(item => {
+        return item.id && Number(item.price) > 0 && Number(item.quantity) > 0 && item.name && item.images && item.size;
+      });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      return cart;
+    }
+
+    // Function to remove a specific item from the cart
+    function removeCartItem(id, size) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.filter(item => !(item.id === id && item.size === size));
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartTotal();
+      updateCartSidebar();
+    }
 
     // Function to create a product card
     function createProductCard(product) {
@@ -376,35 +621,61 @@
     // Update cart total in navbar
     function updateCartTotal() {
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const total = cart.reduce((sum, item) => sum + item.price, 0);
-      document.getElementById('cart-total-nav').textContent = total.toFixed(2);
+      const total = cart.reduce((sum, item) => {
+        const price = Number(item.price) || 0;
+        const quantity = Number(item.quantity) || 1;
+        return sum + price * quantity;
+      }, 0);
+      document.getElementById('cart-total-nav').textContent = isNaN(total) ? '0.00' : total.toFixed(2);
     }
 
     // Update cart sidebar content
     function updateCartSidebar() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cart = cleanCartData(); // Ensure cart data is clean
       const cartItemsContainer = document.getElementById('cart-sidebar-items');
       const cartTotalElement = document.getElementById('cart-sidebar-total');
-      cartItemsContainer.innerHTML = '';
+      cartItemsContainer.innerHTML = ''; // Clear the container
 
-      if (cart.length === 0) {
+      if (!cart || cart.length === 0) {
         cartItemsContainer.innerHTML = '<p class="text-center">Your cart is empty.</p>';
-      } else {
-        cart.forEach(item => {
-          const cartItem = `
-            <div class="cart-item d-flex align-items-center mb-3">
-              <img src="${item.image}" alt="${item.name}" class="cart-item-img">
-              <div class="cart-item-details ms-3">
-                <h6>${item.name}</h6>
-                <p>₹${item.price.toFixed(2)}</p>
-              </div>
-            </div>
-          `;
-          cartItemsContainer.innerHTML += cartItem;
-        });
+        cartTotalElement.textContent = '0.00';
+        return;
       }
 
-      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      // Render each cart item with remove button
+      cart.forEach(item => {
+        const price = Number(item.price) || 0;
+        const quantity = Number(item.quantity) || 1;
+        const image = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : 'https://images.unsplash.com/photo-1556906781-9a412961c28c'; // Fallback image
+        const cartItem = `
+          <div class="cart-item mb-3">
+            <button class="remove-cart-item" data-id="${item.id}" data-size="${item.size}">❌</button>
+            <img src="${image}" alt="${item.name || 'Product'}" class="cart-item-img" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c';">
+            <div class="cart-item-details ms-3">
+              <h6>${item.name || 'Unknown Product'}</h6>
+              <p>Size: ${item.size || 'N/A'}</p>
+              <p class="text-danger">₹${price.toFixed(2)} x ${quantity}</p>
+            </div>
+          </div>
+        `;
+        cartItemsContainer.innerHTML += cartItem;
+      });
+
+      // Add event listeners to remove buttons
+      document.querySelectorAll('.remove-cart-item').forEach(button => {
+        button.addEventListener('click', () => {
+          const id = parseInt(button.dataset.id);
+          const size = button.dataset.size;
+          removeCartItem(id, size);
+        });
+      });
+
+      // Calculate and update total
+      const total = cart.reduce((sum, item) => {
+        const price = Number(item.price) || 0;
+        const quantity = Number(item.quantity) || 1;
+        return sum + price * quantity;
+      }, 0);
       cartTotalElement.textContent = total.toFixed(2);
     }
 
@@ -413,7 +684,9 @@
       displayProducts(products, 'product-list', 0, 5);
       displayProducts(products, 'latest-product-list', 5, 8);
       displayProducts(products, 'best-selling-product-list', 8, 11);
+      cleanCartData();
       updateCartTotal();
+      updateCartSidebar();
     });
   </script>
 </body>
