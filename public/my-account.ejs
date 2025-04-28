@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prime Mart - My Account</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      padding-top: 70px;
+    }
+
+    .navbar {
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-container {
+      position: relative;
+    }
+
+    .search-bar {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 200px;
+      z-index: 1000;
+    }
+
+    .search-bar.active {
+      display: block;
+    }
+
+    .my-account-section {
+      padding: 50px 0;
+    }
+
+    .account-sidebar {
+      border-right: 1px solid #eee;
+      padding-right: 20px;
+    }
+
+    .account-sidebar h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .account-sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .account-sidebar ul li {
+      margin-bottom: 10px;
+    }
+
+    .account-sidebar ul li a {
+      color: #333;
+      text-decoration: none;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .account-sidebar ul li a.active {
+      color: #003087;
+      border-left: 3px solid #003087;
+      padding-left: 10px;
+    }
+
+    .account-sidebar ul li a:hover {
+      color: #003087;
+    }
+
+    .account-content {
+      padding-left: 20px;
+    }
+
+    .account-content h3 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .account-content p {
+      margin-bottom: 20px;
+    }
+
+    .account-nav-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .account-nav-buttons a {
+      padding: 10px 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .account-nav-buttons a.active {
+      background-color: #003087;
+      color: white;
+      border-color: #003087;
+    }
+
+    .account-nav-buttons a:hover {
+      background-color: #f8f9fa;
+    }
+
+    @media (max-width: 767px) {
+      .account-sidebar {
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+      }
+
+      .account-content {
+        padding-left: 0;
+      }
+
+      .account-nav-buttons {
+        flex-direction: column;
+      }
+
+      .account-nav-buttons a {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <img src="https://primemartdeals.com/wp-content/uploads/2024/08/Logo-13.png" alt="Prime Mart Logo" style="height: 40px;">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">HOME</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/about">ABOUT US</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/shop">SHOP</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/contact">CONTACT</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <% if (session.user) { %>
+            <li class="nav-item">
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/my-account">My Account多家: My Account</a>
+            </li>
+            <li class="nav-item">
+              <div class="search-container">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" class="search-bar" placeholder="Search...">
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-outline-danger" href="/logout">LOGOUT</a>
+            </li>
+          <% } else { %>
+            <li class="nav-item">
+              <div class="search-container">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" class="search-bar" placeholder="Search...">
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-outline-primary" href="#" data-bs-toggle="modal" data-bs-target="#authModal" data-form="login">LOGIN</a>
+            </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- My Account Section -->
+  <section class="my-account-section">
+    <div class="container">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 account-sidebar">
+          <h2>MY ACCOUNT</h2>
+          <ul>
+            <li><a href="#" class="nav-link active" data-section="dashboard">Dashboard</a></li>
+            <li><a href="#" class="nav-link" data-section="orders">Orders</a></li>
+            <li><a href="#" class="nav-link" data-section="downloads">Downloads</a></li>
+            <li><a href="#" class="nav-link" data-section="addresses">Addresses</a></li>
+            <li><a href="#" class="nav-link" data-section="account-details">Account Details</a></li>
+            <li><a href="/logout" class="nav-link">Logout</a></li>
+          </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 account-content">
+          <div id="dashboard-section" class="account-section">
+            <h3>Dashboard</h3>
+            <p>Hello <strong><%= session.user ? session.user.username : 'User' %> #<%= session.user ? session.user.id : '0000' %></strong> (not <strong><%= session.user ? session.user.username : 'User' %></strong>? <a href="/logout">Log out</a>)</p>
+            <p>From your account dashboard you can view your recent orders, manage your password and account details.</p>
+          </div>
+
+          <div id="orders-section" class="account-section" style="display: none;">
+            <h3>Orders</h3>
+            <p>No orders found.</p>
+          </div>
+
+          <div id="downloads-section" class="account-section" style="display: none;">
+            <h3>Downloads</h3>
+            <p>No downloads available.</p>
+          </div>
+
+          <div id="addresses-section" class="account-section" style="display: none;">
+            <h3>Addresses</h3>
+            <p>No addresses saved.</p>
+          </div>
+
+          <div id="account-details-section" class="account-section" style="display: none;">
+            <h3>Account Details</h3>
+            <p>Manage your account details here.</p>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="account-nav-buttons">
+            <a href="#" class="nav-link active" data-section="dashboard">Dashboard</a>
+            <a href="#" class="nav-link" data-section="orders">Orders</a>
+            <a href="#" class="nav-link" data-section="downloads">Downloads</a>
+            <a href="#" class="nav-link" data-section="addresses">Addresses</a>
+            <a href="#" class="nav-link" data-section="account-details">Account details</a>
+            <a href="/logout" class="nav-link">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-purple text-white py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h5>ABOUT US</h5>
+          <p>
+            Welcome to Prime Mart, the ultimate destination for premium BRANDED clothing. We specialize in offering a curated selection of high-quality, stylish apparel from top global brands. Our collection is designed for fashion-conscious individuals.
+          </p>
+        </div>
+        <div class="col-md-4">
+          <h5>QUICK LINKS</h5>
+          <ul class="list-unstyled">
+            <li><a href="/about" class="text-white">About us</a></li>
+            <li><a href="/privacy" class="text-white">Privacy Policy</a></li>
+            <li><a href="/terms" class="text-white">Terms and Conditions</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5>REACH US AT</h5>
+          <p>PRIME MART DEALS</p>
+          <p><a href="mailto:support@classicstore.co" class="text-white">support@classicstore.co</a></p>
+        </div>
+      </div>
+      <div class="text-center mt-3">
+        <p>© 2025 Prime Mart. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/scripts.js"></script>
+  <script>
+    // Search bar toggle functionality
+    document.querySelector('.search-icon').addEventListener('click', function() {
+      const searchBar = document.querySelector('.search-bar');
+      searchBar.classList.toggle('active');
+      if (searchBar.classList.contains('active')) {
+        searchBar.focus();
+      }
+    });
+
+    // Function to clean invalid cart data
+    function cleanCartData() {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.filter(item => {
+        return item.id && Number(item.price) > 0 && Number(item.quantity) > 0 && item.name && item.images && item.size;
+      });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      return cart;
+    }
+
+    // Update cart total in navbar
+    function updateCartTotal() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const total = cart.reduce((sum, item) => {
+        const price = Number(item.price) || 0;
+        const quantity = Number(item.quantity) || 1;
+        return sum + price * quantity;
+      }, 0);
+      document.getElementById('cart-total-nav').textContent = isNaN(total) ? '0.00' : total.toFixed(2);
+    }
+
+    // Handle account section navigation
+    document.querySelectorAll('.nav-link[data-section]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const section = link.getAttribute('data-section');
+
+        // Hide all sections
+        document.querySelectorAll('.account-section').forEach(section => {
+          section.style.display = 'none';
+        });
+
+        // Show selected section
+        document.getElementById(`${section}-section`).style.display = 'block';
+
+        // Update active class for sidebar links
+        document.querySelectorAll('.account-sidebar .nav-link').forEach(navLink => {
+          navLink.classList.remove('active');
+        });
+        document.querySelector(`.account-sidebar .nav-link[data-section="${section}"]`).classList.add('active');
+
+        // Update active class for navigation buttons
+        document.querySelectorAll('.account-nav-buttons .nav-link').forEach(navButton => {
+          navButton.classList.remove('active');
+        });
+        document.querySelector(`.account-nav-buttons .nav-link[data-section="${section}"]`).classList.add('active');
+      });
+    });
+
+    // Load cart total on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      cleanCartData();
+      updateCartTotal();
+    });
+  </script>
+</body>
+</html>

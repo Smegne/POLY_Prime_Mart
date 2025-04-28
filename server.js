@@ -7,7 +7,7 @@ const port = 3000;
 
 // Middleware
 app.set('view engine', 'ejs');
-app.set('views', __dirname + '/public');
+app.set('views', __dirname + '/public'); // Note: Consider moving to a 'views' directory
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
@@ -79,6 +79,19 @@ app.get('/shop', (req, res) => {
   res.render('shop', { session: req.session });
 });
 
+// Add the /my-account route
+app.get('/my-account', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  res.render('my-account', { session: req.session });
+});
+
+// Add the /order-complete route
+app.get('/order-complete', (req, res) => {
+  res.render('order-complete', { session: req.session });
+});
+
 // Register
 app.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
@@ -107,8 +120,12 @@ app.post('/login', (req, res) => {
     if (err || results.length === 0) return res.send('Invalid email or password');
     const match = await bcrypt.compare(password, results[0].password);
     if (match) {
-      req.session.user = results[0].username;
-      res.redirect('/');
+      // Store the full user object in the session (including id and username)
+      req.session.user = {
+        id: results[0].id,
+        username: results[0].username
+      };
+      res.redirect('/my-account'); // Redirect to /my-account after login
     } else {
       res.send('Invalid email or password');
     }

@@ -33,166 +33,129 @@
       display: block;
     }
 
-    .breadcrumb {
-      background: none;
-      padding: 20px 0;
-      text-align: center;
+    .checkout-section {
+      padding: 50px 0;
     }
 
-    .breadcrumb-item a {
-      color: #333;
-      text-decoration: none;
-    }
-
-    .breadcrumb-item.active {
-      color: #ff6200;
-    }
-
-    .cart-table th {
-      background-color: #f8f9fa;
-      padding: 15px;
-      text-align: center;
-    }
-
-    .cart-table td {
-      vertical-align: middle;
-      padding: 15px;
-      text-align: center;
-    }
-
-    .cart-item-img {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-    }
-
-    .quantity-control {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .quantity-control button {
-      width: 30px;
-      height: 30px;
-      padding: 0;
-      border: 1px solid #ccc;
-      background-color: #fff;
-      cursor: pointer;
-    }
-
-    .quantity-control input {
-      width: 50px;
-      text-align: center;
-      border: 1px solid #ccc;
-      border-left: none;
-      border-right: none;
-      height: 30px;
-    }
-
-    .cart-totals {
-      background-color: #f8f9fa;
-      padding: 20px;
-      border-radius: 5px;
-    }
-
-    .cart-totals h5 {
+    .billing-details h5,
+    .order-summary h5,
+    .shipping-options h5,
+    .payment-options h5 {
       font-size: 1.2rem;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .form-label {
+      font-weight: bold;
+    }
+
+    .form-control,
+    .form-select {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
       margin-bottom: 15px;
     }
 
-    .cart-totals p {
+    .order-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .order-item-img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      margin-right: 15px;
+    }
+
+    .order-item-details p {
+      margin: 0;
+    }
+
+    .order-totals {
+      margin-top: 20px;
+    }
+
+    .order-totals p {
       display: flex;
       justify-content: space-between;
       margin-bottom: 10px;
     }
 
-    .cart-totals p.total {
+    .order-totals p.total {
       font-weight: bold;
       font-size: 1.2rem;
     }
 
-    .coupon-section {
-      margin-top: 20px;
+    .payment-option {
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 15px;
     }
 
-    .coupon-section input {
+    .payment-option label {
+      margin: 0;
+    }
+
+    .order-notes textarea {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
-    }
-
-    .coupon-section button {
-      width: 100%;
       padding: 10px;
-      background-color: #f8f9fa;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      cursor: pointer;
+      margin-top: 10px;
     }
 
-    .action-buttons {
+    .checkout-buttons {
       display: flex;
       justify-content: space-between;
       margin-top: 20px;
     }
 
-    .action-buttons a, .action-buttons button {
+    .place-order-btn {
+      background-color: #003087;
+      color: white;
+      border: none;
       padding: 10px 20px;
       text-transform: uppercase;
       font-weight: bold;
     }
 
-    .proceed-checkout {
-      background-color: #003087;
-      color: white;
-      border: none;
-    }
-
-    .update-cart {
-      background-color: #6c757d;
-      color: white;
-      border: none;
-    }
-
-    .continue-shopping {
+    .return-cart {
       color: #003087;
-      border: 1px solid #003087;
+      text-decoration: none;
     }
 
-    .remove-cart-item {
-      background: none;
-      border: none;
-      font-size: 1.2rem;
-      cursor: pointer;
-      color: #ff0000;
+    .terms-text {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 10px;
     }
 
-    .remove-cart-item:hover {
-      color: #cc0000;
+    .terms-text a {
+      color: #003087;
     }
 
     @media (max-width: 767px) {
-      .cart-table th, .cart-table td {
-        font-size: 0.9rem;
-        padding: 10px;
-      }
-
-      .cart-item-img {
-        width: 60px;
-        height: 60px;
-      }
-
-      .action-buttons {
+      .checkout-buttons {
         flex-direction: column;
         gap: 10px;
       }
 
-      .action-buttons a, .action-buttons button {
+      .place-order-btn,
+      .return-cart {
         width: 100%;
         text-align: center;
+      }
+
+      .order-item-img {
+        width: 60px;
+        height: 60px;
       }
     }
   </style>
@@ -258,47 +221,101 @@
     </div>
   </nav>
 
-  <!-- Breadcrumb -->
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/cart">SHOPPING CART</a></li>
-      <li class="breadcrumb-item active" aria-current="page">CHECKOUT DETAILS</li>
-      <li class="breadcrumb-item">ORDER COMPLETE</li>
-    </ol>
-  </nav>
-
-  <!-- Cart Table -->
-  <section class="cart-section py-5">
+  <!-- Checkout Section -->
+  <section class="checkout-section">
     <div class="container">
       <div class="row">
+        <!-- Billing Details -->
         <div class="col-md-8">
-          <table class="table cart-table">
-            <thead>
-              <tr>
-                <th>PRODUCT</th>
-                <th>PRICE</th>
-                <th>QUANTITY</th>
-                <th>SUBTOTAL</th>
-              </tr>
-            </thead>
-            <tbody id="cart-items"></tbody>
-          </table>
-          <div class="action-buttons">
-            <a href="/shop" class="btn continue-shopping">CONTINUE SHOPPING</a>
-            <button class="btn update-cart" onclick="updateCart()">UPDATE CART</button>
+          <div class="billing-details">
+            <h5>Billing Details</h5>
+            <form id="checkout-form">
+              <!-- Contact Information -->
+              <div class="mb-3">
+                <label for="email" class="form-label">Contact Information</label>
+                <p>We will use this email to send you detailed updates about your order.</p>
+                <input type="email" class="form-control" id="email" name="email" placeholder="abc@example.com" required>
+              </div>
+
+              <!-- Shipping Address -->
+              <div class="mb-3">
+                <label class="form-label">Shipping Address</label>
+                <p>Enter the address where you want your order to be delivered.</p>
+                <select class="form-select" name="country" required>
+                  <option value="" disabled selected>Select the country/region</option>
+                  <option value="IN">India</option>
+                  <!-- Add more countries as needed -->
+                </select>
+                <div class="row">
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" name="firstName" placeholder="First name" required>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" name="lastName" placeholder="Last name" required>
+                  </div>
+                </div>
+                <input type="text" class="form-control" name="address" placeholder="Address, street, etc." required>
+                <input type="text" class="form-control" name="city" placeholder="City" required>
+                <div class="row">
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" name="state" placeholder="State/County" required>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" name="postalCode" placeholder="Postal Code" required>
+                  </div>
+                </div>
+                <input type="tel" class="form-control" name="phone" placeholder="Phone (Optional)">
+              </div>
+
+              <!-- Different Address for Billing -->
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="differentBilling">
+                <label class="form-check-label" for="differentBilling">Use a different address for billing</label>
+              </div>
+
+              <!-- Shipping Options -->
+              <div class="shipping-options mb-3">
+                <h5>Shipping Options</h5>
+                <p>Enter a shipping address to view shipping options.</p>
+              </div>
+
+              <!-- Payment Options -->
+              <div class="payment-options mb-3">
+                <h5>Payment Options</h5>
+                <div class="payment-option">
+                  <input type="radio" id="cod" name="paymentMethod" value="cod" checked>
+                  <label for="cod">Cash on delivery <br> Pay with cash upon delivery</label>
+                </div>
+              </div>
+
+              <!-- Order Notes -->
+              <div class="order-notes mb-3">
+                <h5>Add a note to your order</h5>
+                <textarea rows="3" placeholder="Add a note to your order"></textarea>
+              </div>
+
+              <!-- Terms and Buttons -->
+              <p class="terms-text">
+                By proceeding with your purchase you agree to our <a href="/terms">Terms & Conditions</a> and <a href="/privacy">Privacy Policy</a>.
+              </p>
+              <div class="checkout-buttons">
+                <a href="/cart" class="return-cart">← RETURN TO CART</a>
+                <button type="submit" class="btn place-order-btn">PLACE ORDER</button>
+              </div>
+            </form>
           </div>
         </div>
+
+        <!-- Order Summary -->
         <div class="col-md-4">
-          <div class="cart-totals">
-            <h5>CART TOTALS</h5>
-            <p>Subtotal <span id="cart-subtotal">₹0.00</span></p>
-            <p>Shipping <span id="cart-shipping">Enter your address to view shipping options.</span></p>
-            <p class="total">Total <span id="cart-total">₹0.00</span></p>
-            <button class="btn proceed-checkout w-100" onclick="proceedToOrder()">PROCEED TO CHECKOUT</button>
-          </div>
-          <div class="coupon-section">
-            <input type="text" placeholder="Coupon code">
-            <button>Apply coupon</button>
+          <div class="order-summary">
+            <h5>Order Summary</h5>
+            <div id="order-items"></div>
+            <div class="order-totals">
+              <p>Subtotal <span id="order-subtotal">₹0.00</span></p>
+              <p>Delivery <span id="order-delivery">Enter address to calculate</span></p>
+              <p class="total">Total <span id="order-total">₹0.00</span></p>
+            </div>
           </div>
         </div>
       </div>
@@ -358,113 +375,65 @@
       return cart;
     }
 
-    // Function to remove a specific item from the cart
-    function removeCartItem(id, size) {
-      let cart = JSON.parse(localStorage.getItem('cart')) || [];
-      cart = cart.filter(item => !(item.id === id && item.size === size));
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCartTable();
-      updateCartTotal();
-    }
-
-    // Function to update quantity of a specific item
-    function updateQuantity(id, size, change) {
-      let cart = JSON.parse(localStorage.getItem('cart')) || [];
-      cart = cart.map(item => {
-        if (item.id === id && item.size === size) {
-          item.quantity = Math.max(1, Number(item.quantity) + change); // Prevent quantity from going below 1
-        }
-        return item;
-      });
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCartTable();
-      updateCartTotal();
-    }
-
-    // Function to update cart table
-    function updateCartTable() {
+    // Function to update order summary
+    function updateOrderSummary() {
       const cart = cleanCartData();
-      const cartItemsContainer = document.getElementById('cart-items');
-      cartItemsContainer.innerHTML = '';
+      const orderItemsContainer = document.getElementById('order-items');
+      orderItemsContainer.innerHTML = '';
 
       if (!cart || cart.length === 0) {
-        cartItemsContainer.innerHTML = '<tr><td colspan="4" class="text-center">Your cart is empty.</td></tr>';
+        orderItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
         return;
       }
 
-      cart.forEach(item => {
+      cart.forEach((item, index) => {
         const price = Number(item.price) || 0;
         const quantity = Number(item.quantity) || 1;
         const image = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : 'https://images.unsplash.com/photo-1556906781-9a412961c28c';
         const subtotal = price * quantity;
-        const cartItem = `
-          <tr>
-            <td>
-              <div class="d-flex align-items-center">
-                <button class="remove-cart-item" data-id="${item.id}" data-size="${item.size}">❌</button>
-                <img src="${image}" alt="${item.name}" class="cart-item-img ms-2">
-                <div class="ms-3">
-                  <p class="mb-0">${item.name}</p>
-                  <small>Size: ${item.size}</small>
-                </div>
-              </div>
-            </td>
-            <td>₹${price.toFixed(2)}</td>
-            <td>
-              <div class="quantity-control">
-                <button onclick="updateQuantity(${item.id}, '${item.size}', -1)">-</button>
-                <input type="text" value="${quantity}" readonly>
-                <button onclick="updateQuantity(${item.id}, '${item.size}', 1)">+</button>
-              </div>
-            </td>
-            <td>₹${subtotal.toFixed(2)}</td>
-          </tr>
+        const orderItem = `
+          <div class="order-item">
+            <span>${index + 1}.</span>
+            <img src="${image}" alt="${item.name}" class="order-item-img">
+            <div class="order-item-details">
+              <p>${item.name}</p>
+              <p>Size: ${item.size}</p>
+              <p>₹${subtotal.toFixed(2)}</p>
+            </div>
+          </div>
         `;
-        cartItemsContainer.innerHTML += cartItem;
+        orderItemsContainer.innerHTML += orderItem;
       });
 
-      // Add event listeners to remove buttons
-      document.querySelectorAll('.remove-cart-item').forEach(button => {
-        button.addEventListener('click', () => {
-          const id = parseInt(button.dataset.id);
-          const size = button.dataset.size;
-          removeCartItem(id, size);
-        });
-      });
-    }
-
-    // Function to update cart totals
-    function updateCartTotal() {
-      const cart = cleanCartData();
+      // Update totals
       const subtotal = cart.reduce((sum, item) => {
         const price = Number(item.price) || 0;
         const quantity = Number(item.quantity) || 1;
         return sum + price * quantity;
       }, 0);
-      document.getElementById('cart-subtotal').textContent = `₹${subtotal.toFixed(2)}`;
-      document.getElementById('cart-total').textContent = `₹${subtotal.toFixed(2)}`; // Assuming shipping is free or not calculated yet
+      document.getElementById('order-subtotal').textContent = `₹${subtotal.toFixed(2)}`;
+      document.getElementById('order-total').textContent = `₹${subtotal.toFixed(2)}`; // Assuming delivery is free or not calculated
       document.getElementById('cart-total-nav').textContent = subtotal.toFixed(2);
     }
 
-    // Function to handle "Update Cart" button
-    function updateCart() {
-      updateCartTable();
-      updateCartTotal();
-      alert('Cart updated successfully!');
-    }
+    // Handle form submission
+    document.getElementById('checkout-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const cart = cleanCartData();
+      if (cart.length === 0) {
+        alert('Your cart is empty. Please add items to proceed.');
+        return;
+      }
+      // Clear cart after placing order
+      localStorage.setItem('cart', JSON.stringify([]));
+      alert('Order placed successfully!');
+      window.location.href = '/order-complete'; // Redirect to order completion page
+    });
 
-    // Function to handle "Proceed to Checkout" button
-    function proceedToOrder() {
-      // Redirect to order completion page (not implemented)
-      alert('Proceeding to order completion...');
-      // window.location.href = '/order-complete'; // Uncomment and implement this route if needed
-    }
-
-    // Load cart data on page load
+    // Load order summary on page load
     document.addEventListener('DOMContentLoaded', () => {
       cleanCartData();
-      updateCartTable();
-      updateCartTotal();
+      updateOrderSummary();
     });
   </script>
 </body>

@@ -183,36 +183,42 @@
 
     .cart-item {
       border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
+      min-height: 80px;
     }
 
     .cart-item-img {
-      width: 80px;
-      height: 80px;
+      width: 60px;
+      height: 60px;
       object-fit: cover;
+      margin-right: 10px;
     }
 
     .cart-item-details h6 {
-      font-size: 1rem;
-      margin-bottom: 5px;
+      font-size: 0.95rem;
+      margin-bottom: 3px;
+      line-height: 1.2;
     }
 
     .cart-item-details p {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #ff6200;
-      margin-bottom: 5px;
+      margin-bottom: 3px;
+      line-height: 1.2;
     }
 
     .cart-item-details .quantity {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #333;
+      margin-bottom: 0;
     }
 
     .cart-sidebar-footer {
       margin-top: auto;
-      padding-top: 20px;
+      padding-top: 15px;
       border-top: 1px solid #eee;
     }
 
@@ -220,6 +226,50 @@
       font-size: 1.2rem;
       font-weight: bold;
       margin-bottom: 10px;
+    }
+
+    #cart-sidebar-items {
+      flex: 1;
+      overflow-y: scroll;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    /* Custom Scrollbar Styling */
+    #cart-sidebar-items::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #cart-sidebar-items::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    #cart-sidebar-items::-webkit-scrollbar-thumb {
+      background: #ff6200;
+      border-radius: 4px;
+    }
+
+    #cart-sidebar-items::-webkit-scrollbar-thumb:hover {
+      background: #e05500;
+    }
+
+    /* Scroll Indicator (Gradient at bottom when scrollable) */
+    #cart-sidebar-items::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      background: linear-gradient(transparent, rgba(255, 255, 255, 0.8));
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    #cart-sidebar-items.scrollable::after {
+      opacity: 1;
     }
 
     #cd-shadow-layer {
@@ -284,6 +334,36 @@
       color: #cc0000;
     }
 
+    /* Cart Icon and Badge Styling */
+    .cart-trigger {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .cart-icon {
+      font-size: 1.2rem;
+      position: relative;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background-color: #ff0000;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translate(10%, -10%);
+    }
+
     @media (max-width: 991px) {
       .sidebar {
         position: fixed;
@@ -344,17 +424,25 @@
         <ul class="navbar-nav ms-auto">
           <% if (session.user) { %>
             <li class="nav-item">
-              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
-            </li>
-            <li class="nav-item">
-              <span class="nav-link">My Account</span>
-            </li>
-            <li class="nav-item">
               <div class="search-container">
                 <i class="bi bi-search search-icon"></i>
                 <input type="text" class="search-bar" placeholder="Search...">
               </div>
             </li>
+            <li class="nav-item">
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">
+                <span>CART</span>
+                
+                <span class="cart-badge" id="cart-item-count">0</span>
+             
+                <span>| ₹</span><span id="cart-total-nav">0.00</span>
+                <span class="cart-icon">🛒</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <span class="nav-link">My Account</span>
+            </li>
+            
             <li class="nav-item">
               <a class="nav-link btn btn-outline-danger" href="/logout">LOGOUT</a>
             </li>
@@ -366,7 +454,13 @@
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">
+                <span>CART</span>
+            
+                <span class="cart-badge" id="cart-item-count">0</span>
+                <span>| ₹</span><span id="cart-total-nav">0.00</span>
+                <span class="cart-icon">🛒</span>
+              </a>
             </li>
             <li class="nav-item">
               <a class="nav-link btn btn-outline-primary me-2" href="#" data-bs-toggle="modal" data-bs-target="#authModal" data-form="login">LOGIN</a>
@@ -387,7 +481,7 @@
     <div id="cart-sidebar-items"></div>
     <div class="cart-sidebar-footer">
       <p>Total: ₹<span id="cart-sidebar-total">0.00</span></p>
-      <a href="/checkout" class="btn btn-primary w-100">Proceed to Checkout</a>
+      <a href="/cart" class="btn btn-primary w-100">View cart</a>
     </div>
   </div>
 
@@ -1154,7 +1248,7 @@
       return stars;
     }
 
-    // Update cart total in navbar
+    // Update cart total and item count in navbar
     function updateCartTotal() {
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
       const total = cart.reduce((sum, item) => {
@@ -1162,7 +1256,12 @@
         const quantity = Number(item.quantity) || 1;
         return sum + price * quantity;
       }, 0);
+      const itemCount = cart.reduce((sum, item) => {
+        const quantity = Number(item.quantity) || 1;
+        return sum + quantity;
+      }, 0);
       document.getElementById('cart-total-nav').textContent = isNaN(total) ? '0.00' : total.toFixed(2);
+      document.getElementById('cart-item-count').textContent = itemCount;
     }
 
     // Update cart sidebar content
@@ -1175,6 +1274,7 @@
       if (!cart || cart.length === 0) {
         cartItemsContainer.innerHTML = '<p class="text-center">Your cart is empty.</p>';
         cartTotalElement.textContent = '0.00';
+        cartItemsContainer.classList.remove('scrollable');
         return;
       }
 
@@ -1184,10 +1284,10 @@
         const quantity = Number(item.quantity) || 1;
         const image = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : 'https://images.unsplash.com/photo-1556906781-9a412961c28c'; // Fallback image
         const cartItem = `
-          <div class="cart-item mb-3">
+          <div class="cart-item">
             <button class="remove-cart-item" data-id="${item.id}" data-size="${item.size}">❌</button>
             <img src="${image}" alt="${item.name || 'Product'}" class="cart-item-img" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c';">
-            <div class="cart-item-details ms-3">
+            <div class="cart-item-details">
               <h6>${item.name || 'Unknown Product'}</h6>
               <p>Size: ${item.size || 'N/A'}</p>
               <p class="text-danger">₹${price.toFixed(2)} x ${quantity}</p>
@@ -1213,6 +1313,13 @@
         return sum + price * quantity;
       }, 0);
       cartTotalElement.textContent = total.toFixed(2);
+
+      // Check if the content is scrollable for the gradient indicator
+      if (cartItemsContainer.scrollHeight > cartItemsContainer.clientHeight) {
+        cartItemsContainer.classList.add('scrollable');
+      } else {
+        cartItemsContainer.classList.remove('scrollable');
+      }
     }
 
     // Populate categories dynamically
@@ -1232,7 +1339,7 @@
       // Add event listeners to category links
       categoryList.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
-          e.preventDefault();
+          e.byClassList.preventDefault();
           selectedCategory = link.dataset.category;
           applyFilters();
         });

@@ -7,7 +7,10 @@ body {
   display: flex;
   align-items: center;
 }
-
+#cart-sidebar-items {
+  scrollbar-width: thin;
+  scrollbar-color: #ff6200 #f1f1f1;
+}
 .navbar-nav .nav-link {
   color: #0056b3;
   font-weight: 500;

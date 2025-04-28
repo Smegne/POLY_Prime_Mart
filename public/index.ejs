@@ -11,11 +11,13 @@
     /* Hero Section */
     .hero-section {
       position: relative;
-      background: url('https://images.unsplash.com/photo-1445205170230-0532119d4274') no-repeat center center;
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1509631179647-0177331693ae') no-repeat center center;
       background-size: cover;
+      background-attachment: fixed;
       color: white;
-      padding: 100px 0;
+      padding: 150px 0;
       text-align: center;
+      overflow: hidden;
     }
 
     .hero-background {
@@ -25,49 +27,136 @@
       width: 100%;
       height: 100%;
       z-index: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .hero-model {
       position: absolute;
-      width: 200px;
+      width: 300px;
       height: auto;
       object-fit: cover;
-      opacity: 0.8;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      animation: fadeInModel 1s forwards;
+      top: 50%;
+      transform: translateY(-50%);
     }
 
-    .model-1 { top: 10%; left: 10%; }
-    .model-2 { top: 20%; right: 10%; }
-    .model-3 { bottom: 10%; left: 15%; }
-    .model-4 { bottom: 15%; right: 15%; }
+    .model-1 { left: 0%; animation-delay: 0.8s; }
+    .model-2 { left: 25%; animation-delay: 0.10s; }
+    .model-3 { left: 50%; animation-delay: 0.12s; }
+    .model-4 { left: 75%; animation-delay: 0.14s; }
 
-    .banner-container {
-      background: rgba(0, 0, 0, 0.5);
-      padding: 20px;
-      border-radius: 10px;
-      transition: transform 0.5s ease;
+    @keyframes fadeInModel {
+      to {
+        opacity: 0.8;
+      }
     }
 
-    .banner-container.extended {
-      transform: scale(1.1);
+    .banner-container h3 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+      animation: fadeInText 1s ease-in-out;
+    }
+
+    .banner-container h2 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+      animation: fadeInText 1.2s ease-in-out;
+    }
+
+    .banner-container + p {
+      font-size: 1.5rem;
+      font-weight: 300;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+      animation: fadeInText 1.4s ease-in-out;
+    }
+
+    .shop-now-btn {
+      background-color: #ff6200;
+      border: none;
+      padding: 12px 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      animation: fadeInText 1.6s ease-in-out;
+    }
+
+    .shop-now-btn:hover {
+      background-color: #e05500;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes fadeInText {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .snowflake {
       position: absolute;
       color: white;
-      font-size: 1em;
+      font-size: 1.2em;
       font-family: Arial, sans-serif;
-      text-shadow: 0 0 5px black;
-      animation: fall linear forwards;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      z-index: 1;
+      pointer-events: none;
     }
 
     @keyframes fall {
       to {
-        transform: translateY(100vh);
+        transform: translateY(100vh) rotate(360deg);
         opacity: 0;
       }
     }
 
-    /* Product Section */
+    @media (max-width: 767px) {
+      .hero-section {
+        padding: 100px 0;
+        background-attachment: scroll;
+      }
+
+      .banner-container h3 {
+        font-size: 1.8rem;
+      }
+
+      .banner-container h2 {
+        font-size: 2.2rem;
+      }
+
+      .banner-container + p {
+        font-size: 1.2rem;
+      }
+
+      .shop-now-btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+      }
+
+      .hero-model {
+        width: 150px;
+      }
+
+      .model-1 { left: 50%; top: 20%; transform: translate(-50%, 0); }
+      .model-2 { left: 50%; top: 40%; transform: translate(-50%, 0); }
+      .model-3 { left: 50%; top: 60%; transform: translate(-50%, 0); }
+      .model-4 { left: 50%; top: 80%; transform: translate(-50%, 0); }
+    }
+
     .product-card-container {
       position: relative;
     }
@@ -105,7 +194,6 @@
       font-size: 0.9rem;
     }
 
-    /* Cart Sidebar Styles */
     #cart-sidebar {
       position: fixed;
       top: 0;
@@ -148,36 +236,42 @@
 
     .cart-item {
       border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
+      min-height: 80px;
     }
 
     .cart-item-img {
-      width: 80px;
-      height: 80px;
+      width: 60px;
+      height: 60px;
       object-fit: cover;
+      margin-right: 10px;
     }
 
     .cart-item-details h6 {
-      font-size: 1rem;
-      margin-bottom: 5px;
+      font-size: 0.95rem;
+      margin-bottom: 3px;
+      line-height: 1.2;
     }
 
     .cart-item-details p {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #ff6200;
-      margin-bottom: 5px;
+      margin-bottom: 3px;
+      line-height: 1.2;
     }
 
     .cart-item-details .quantity {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #333;
+      margin-bottom: 0;
     }
 
     .cart-sidebar-footer {
       margin-top: auto;
-      padding-top: 20px;
+      padding-top: 15px;
       border-top: 1px solid #eee;
     }
 
@@ -185,6 +279,50 @@
       font-size: 1.2rem;
       font-weight: bold;
       margin-bottom: 10px;
+    }
+
+    #cart-sidebar-items {
+      flex: 1;
+      overflow-y: scroll; /* Changed to scroll to always show scrollbar */
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    /* Custom Scrollbar Styling */
+    #cart-sidebar-items::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #cart-sidebar-items::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    #cart-sidebar-items::-webkit-scrollbar-thumb {
+      background: #ff6200;
+      border-radius: 4px;
+    }
+
+    #cart-sidebar-items::-webkit-scrollbar-thumb:hover {
+      background: #e05500;
+    }
+
+    /* Scroll Indicator (Gradient at bottom when scrollable) */
+    #cart-sidebar-items::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      background: linear-gradient(transparent, rgba(255, 255, 255, 0.8));
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    #cart-sidebar-items.scrollable::after {
+      opacity: 1;
     }
 
     #cd-shadow-layer {
@@ -205,7 +343,6 @@
       visibility: visible;
     }
 
-    /* Remove button style */
     .remove-cart-item {
       background: none;
       border: none;
@@ -217,6 +354,36 @@
 
     .remove-cart-item:hover {
       color: #cc0000;
+    }
+
+    /* Cart Icon and Badge Styling */
+    .cart-trigger {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .cart-icon {
+      font-size: 1.2rem;
+      position: relative;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background-color: #ff0000;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translate(10%, -10%);
     }
 
     @media (max-width: 991px) {
@@ -232,11 +399,10 @@
   </style>
 </head>
 <body style="padding-top: 70px;">
-  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
     <div class="container">
       <a class="navbar-brand" href="/">
-        <img src="https://primemartdeals.com/wp-content/uploads/2024/08/Logo-13.png" alt="Prime Mart Logo" style="height: 40px;">
+        <img src="https://primemartdeals.com/wp-content/uploads/2024/08/Logo-13.png" alt="Prime Mart Logo" style="height: 60px;">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -259,16 +425,22 @@
         <ul class="navbar-nav ms-auto">
           <% if (session.user) { %>
             <li class="nav-item">
-              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
-            </li>
-            <li class="nav-item">
-              <span class="nav-link">My Account</span>
-            </li>
-            <li class="nav-item">
               <div class="search-container">
                 <i class="bi bi-search search-icon"></i>
                 <input type="text" class="search-bar" placeholder="Search...">
               </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">
+                <span>CART</span>
+                
+                <span class="cart-badge" id="cart-item-count">0</span>
+                <span>| ₹</span><span id="cart-total-nav">0.00</span>
+                <span class="cart-icon">🛒</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="my-account">My Account</a>
             </li>
             <li class="nav-item">
               <a class="nav-link btn btn-outline-danger" href="/logout">LOGOUT</a>
@@ -281,7 +453,12 @@
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">
+                <span>CART</span>
+                <span class="cart-icon">🛒</span>
+                <span class="cart-badge" id="cart-item-count">0</span>
+                <span>| ₹</span><span id="cart-total-nav">0.00</span>
+              </a>
             </li>
             <li class="nav-item">
               <a class="nav-link btn btn-outline-primary" href="#" data-bs-toggle="modal" data-bs-target="#authModal" data-form="login">LOGIN</a>
@@ -292,7 +469,6 @@
     </div>
   </nav>
 
-  <!-- Cart Sidebar -->
   <div id="cd-shadow-layer"></div>
   <div id="cart-sidebar">
     <div class="cart-sidebar-header">
@@ -302,17 +478,15 @@
     <div id="cart-sidebar-items"></div>
     <div class="cart-sidebar-footer">
       <p>Total: ₹<span id="cart-sidebar-total">0.00</span></p>
-      <a href="/checkout" class="btn btn-primary w-100">Proceed to Checkout</a>
+      <a href="/cart" class="btn btn-primary w-100">view cart</a>
     </div>
   </div>
 
-  <!-- Auth Modal -->
   <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-body">
           <div class="row gx-4">
-            <!-- Login Form -->
             <div class="col-md-6 login-section">
               <h3 class="mb-4">LOGIN</h3>
               <form id="loginForm" action="/login" method="POST">
@@ -332,7 +506,6 @@
                 <p class="mt-3"><a href="#" class="text-muted">Lost your password?</a></p>
               </form>
             </div>
-            <!-- Register Form -->
             <div class="col-md-6 register-section">
               <h3 class="mb-4">REGISTER</h3>
               <form id="registerForm" action="/register" method="POST">
@@ -357,13 +530,12 @@
     </div>
   </div>
 
-  <!-- Hero Section with Banner -->
   <section class="hero-section text-center py-5">
     <div class="hero-background">
       <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f" alt="Model 1" class="hero-model model-1">
-      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c" alt="Model 2" class="hero-model model-2">
-      <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab" alt="Model 3" class="hero-model model-3">
-      <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b" alt="Model 4" class="hero-model model-4">
+      <!-- <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c" alt="Model 2" class="hero-model model-2">
+      <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab" alt="Model 3" class="hero-model model-3"> -->
+      <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZmFzaGlvbnxlbnwwfHwwfHx8MA%3D%3D" alt="Model 4" class="hero-model model-4"> 
     </div>
     <div class="container">
       <div class="banner-container">
@@ -371,58 +543,26 @@
         <h2 class="display-5 fw-bold text-white">HUGE SALE UP TO 70% OFF</h2>
       </div>
       <p class="lead mb-4 text-white">Top Brand Clothing's</p>
-      <a href="/shop" class="btn btn-primary btn-lg" style="background-color: #ff6200; border-color: #ff6200;">SHOP NOW</a>
+      <a href="/shop" class="btn btn-primary btn-lg shop-now-btn">SHOP NOW</a>
     </div>
-    <div class="snowflakes">
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❄</div>
-    </div>
+    <div class="snowflakes" id="snowflakes-container"></div>
   </section>
 
-  <!-- Featured Products -->
   <section class="featured-products py-5">
     <div class="container">
       <h2 class="text-center mb-5">FEATURED PRODUCTS</h2>
-      <div class="row" id="product-list">
-        <!-- Products will be dynamically added here -->
-      </div>
+      <div class="row" id="product-list"></div>
     </div>
   </section>
 
-  <!-- Latest and Best Selling Products -->
   <section class="latest-best-selling py-5">
     <div class="container">
       <div class="narrow-container">
         <div class="row">
-          <!-- Latest Products -->
           <div class="col-md-6 latest-section">
             <h2 class="mb-4">LATEST</h2>
             <div id="latest-product-list"></div>
           </div>
-          <!-- Best Selling Products -->
           <div class="col-md-6">
             <h2 class="mb-4">BEST SELLING</h2>
             <div id="best-selling-product-list"></div>
@@ -432,7 +572,6 @@
     </div>
   </section>
 
-  <!-- Footer -->
   <footer class="bg-purple text-white py-4">
     <div class="container">
       <div class="row">
@@ -466,7 +605,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/scripts.js"></script>
   <script>
-    // Search bar toggle functionality
     document.querySelector('.search-icon').addEventListener('click', function() {
       const searchBar = document.querySelector('.search-bar');
       searchBar.classList.toggle('active');
@@ -475,7 +613,6 @@
       }
     });
 
-    // Banner background extension on load
     document.addEventListener('DOMContentLoaded', () => {
       const banner = document.querySelector('.banner-container');
       setTimeout(() => {
@@ -484,9 +621,9 @@
       cleanCartData();
       updateCartTotal();
       updateCartSidebar();
+      startSnowfall();
     });
 
-    // Cart sidebar toggle functionality
     const cartTrigger = document.getElementById('cart-trigger');
     const cartSidebar = document.getElementById('cart-sidebar');
     const shadowLayer = document.getElementById('cd-shadow-layer');
@@ -511,7 +648,30 @@
       shadowLayer.classList.remove('active');
     });
 
-    // Simulated product data
+    function startSnowfall() {
+      const snowflakesContainer = document.getElementById('snowflakes-container');
+      const createSnowflake = () => {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
+        snowflake.innerHTML = '❄';
+        
+        const startX = Math.random() * 100;
+        const duration = Math.random() * 5 + 5;
+        const delay = Math.random() * 5;
+
+        snowflake.style.left = `${startX}vw`;
+        snowflake.style.animation = `fall ${duration}s linear ${delay}s`;
+
+        snowflakesContainer.appendChild(snowflake);
+
+        snowflake.addEventListener('animationend', () => {
+          snowflake.remove();
+        });
+      };
+
+      setInterval(createSnowflake, 200);
+    }
+
     const products = [
       { id: 1, name: "Adidas Mens Blue Classic Tracksuit", price: 1999.00, originalPrice: 4999.00, image: "https://images.unsplash.com/photo-1599058917212-d750089bc07e" },
       { id: 2, name: "Adidas Mens Black Classic Tracksuit", price: 2099.00, originalPrice: 5099.00, image: "https://images.unsplash.com/photo-1617019114580-58e139fa5289" },
@@ -530,7 +690,6 @@
       { id: 15, name: "Puma Mens White Jacket", price: 3299.00, originalPrice: 7999.00, image: "https://images.unsplash.com/photo-1600585153490-76fb20a0d33b" }
     ];
 
-    // Function to clean invalid cart data
     function cleanCartData() {
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       cart = cart.filter(item => {
@@ -540,7 +699,6 @@
       return cart;
     }
 
-    // Function to remove a specific item from the cart
     function removeCartItem(id, size) {
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       cart = cart.filter(item => !(item.id === id && item.size === size));
@@ -549,7 +707,6 @@
       updateCartSidebar();
     }
 
-    // Function to create a product card
     function createProductCard(product) {
       const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
       return `
@@ -579,7 +736,6 @@
       `;
     }
 
-    // Function to display products in a container
     function displayProducts(productList, containerId, start, end) {
       const container = document.getElementById(containerId);
       const selectedProducts = productList.slice(start, end);
@@ -618,7 +774,6 @@
       });
     }
 
-    // Update cart total in navbar
     function updateCartTotal() {
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
       const total = cart.reduce((sum, item) => {
@@ -626,32 +781,36 @@
         const quantity = Number(item.quantity) || 1;
         return sum + price * quantity;
       }, 0);
+      const itemCount = cart.reduce((sum, item) => {
+        const quantity = Number(item.quantity) || 1;
+        return sum + quantity;
+      }, 0);
       document.getElementById('cart-total-nav').textContent = isNaN(total) ? '0.00' : total.toFixed(2);
+      document.getElementById('cart-item-count').textContent = itemCount;
     }
 
-    // Update cart sidebar content
     function updateCartSidebar() {
-      const cart = cleanCartData(); // Ensure cart data is clean
+      const cart = cleanCartData();
       const cartItemsContainer = document.getElementById('cart-sidebar-items');
       const cartTotalElement = document.getElementById('cart-sidebar-total');
-      cartItemsContainer.innerHTML = ''; // Clear the container
+      cartItemsContainer.innerHTML = '';
 
       if (!cart || cart.length === 0) {
         cartItemsContainer.innerHTML = '<p class="text-center">Your cart is empty.</p>';
         cartTotalElement.textContent = '0.00';
+        cartItemsContainer.classList.remove('scrollable');
         return;
       }
 
-      // Render each cart item with remove button
       cart.forEach(item => {
         const price = Number(item.price) || 0;
         const quantity = Number(item.quantity) || 1;
-        const image = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : 'https://images.unsplash.com/photo-1556906781-9a412961c28c'; // Fallback image
+        const image = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : 'https://images.unsplash.com/photo-1556906781-9a412961c28c';
         const cartItem = `
-          <div class="cart-item mb-3">
+          <div class="cart-item">
             <button class="remove-cart-item" data-id="${item.id}" data-size="${item.size}">❌</button>
             <img src="${image}" alt="${item.name || 'Product'}" class="cart-item-img" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c';">
-            <div class="cart-item-details ms-3">
+            <div class="cart-item-details">
               <h6>${item.name || 'Unknown Product'}</h6>
               <p>Size: ${item.size || 'N/A'}</p>
               <p class="text-danger">₹${price.toFixed(2)} x ${quantity}</p>
@@ -661,7 +820,6 @@
         cartItemsContainer.innerHTML += cartItem;
       });
 
-      // Add event listeners to remove buttons
       document.querySelectorAll('.remove-cart-item').forEach(button => {
         button.addEventListener('click', () => {
           const id = parseInt(button.dataset.id);
@@ -670,16 +828,21 @@
         });
       });
 
-      // Calculate and update total
       const total = cart.reduce((sum, item) => {
         const price = Number(item.price) || 0;
         const quantity = Number(item.quantity) || 1;
         return sum + price * quantity;
       }, 0);
       cartTotalElement.textContent = total.toFixed(2);
+
+      // Check if the content is scrollable for the gradient indicator
+      if (cartItemsContainer.scrollHeight > cartItemsContainer.clientHeight) {
+        cartItemsContainer.classList.add('scrollable');
+      } else {
+        cartItemsContainer.classList.remove('scrollable');
+      }
     }
 
-    // Load products and cart total on page load
     document.addEventListener('DOMContentLoaded', () => {
       displayProducts(products, 'product-list', 0, 5);
       displayProducts(products, 'latest-product-list', 5, 8);
