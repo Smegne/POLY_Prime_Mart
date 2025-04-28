@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prime Mart - Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    /* Ensure the product card container is positioned relatively */
+    .product-card-container {
+      position: relative;
+    }
+
+    /* Style for the Quick View button overlay */
+    .quick-view-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Show Quick View button on hover over the image */
+    .product-card-container:hover .quick-view-overlay {
+      opacity: 1;
+    }
+
+    /* Optional: Dim the image on hover to make the button stand out */
+    .product-card-container:hover .card-img-top {
+      opacity: 0.8;
+    }
+
+    /* Enhanced snow effect styles */
+    .snowflakes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .snowflake {
+      color: #fff;
+      font-size: 1.5em;
+      font-family: Arial, sans-serif;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      opacity: 0.9;
+      position: absolute;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        opacity: 0.5;
+        transform: translateY(0vh);
+      }
+      20% {
+        opacity: 0.9;
+      }
+      100% {
+        opacity: 0.5;
+        transform: translateY(100vh);
+      }
+    }
+
+    /* Generate varied animations for snowflakes */
+    .snowflake:nth-child(odd) {
+      animation-duration: 10s;
+    }
+
+    .snowflake:nth-child(even) {
+      animation-duration: 15s;
+    }
+
+    .snowflake:nth-child(3n) {
+      animation-duration: 12s;
+    }
+
+    /* Distribute snowflakes across the screen */
+    .snowflake:nth-child(1) { left: 5%; animation-delay: 0s; }
+    .snowflake:nth-child(2) { left: 10%; animation-delay: 1s; }
+    .snowflake:nth-child(3) { left: 15%; animation-delay: 2s; }
+    .snowflake:nth-child(4) { left: 20%; animation-delay: 0.5s; }
+    .snowflake:nth-child(5) { left: 25%; animation-delay: 3s; }
+    .snowflake:nth-child(6) { left: 30%; animation-delay: 1.5s; }
+    .snowflake:nth-child(7) { left: 35%; animation-delay: 4s; }
+    .snowflake:nth-child(8) { left: 40%; animation-delay: 2.5s; }
+    .snowflake:nth-child(9) { left: 45%; animation-delay: 5s; }
+    .snowflake:nth-child(10) { left: 50%; animation-delay: 0s; }
+    .snowflake:nth-child(11) { left: 55%; animation-delay: 1s; }
+    .snowflake:nth-child(12) { left: 60%; animation-delay: 2s; }
+    .snowflake:nth-child(13) { left: 65%; animation-delay: 0.5s; }
+    .snowflake:nth-child(14) { left: 70%; animation-delay: 3s; }
+    .snowflake:nth-child(15) { left: 75%; animation-delay: 1.5s; }
+    .snowflake:nth-child(16) { left: 80%; animation-delay: 4s; }
+    .snowflake:nth-child(17) { left: 85%; animation-delay: 2.5s; }
+    .snowflake:nth-child(18) { left: 90%; animation-delay: 5s; }
+    .snowflake:nth-child(19) { left: 95%; animation-delay: 0s; }
+    .snowflake:nth-child(20) { left: 8%; animation-delay: 2s; }
+    .snowflake:nth-child(21) { left: 12%; animation-delay: 3s; }
+    .snowflake:nth-child(22) { left: 18%; animation-delay: 1s; }
+    .snowflake:nth-child(23) { left: 22%; animation-delay: 4s; }
+    .snowflake:nth-child(24) { left: 28%; animation-delay: 2.5s; }
+    .snowflake:nth-child(25) { left: 32%; animation-delay: 0.5s; }
+
+    /* Search bar styles */
+    .search-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-icon {
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #333;
+    }
+    .search-bar {
+      width: 0;
+      opacity: 0;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      margin-left: 10px;
+      transition: width 0.3s ease, opacity 0.3s ease;
+    }
+    .search-bar.active {
+      width: 200px;
+      opacity: 1;
+    }
+    .search-bar:focus {
+      outline: none;
+      border: 1px solid #ff6200;
+    }
+
+    /* Banner styles */
+    .banner-container {
+      position: relative;
+      display: inline-block;
+      text-align: center;
+    }
+    .banner-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(135, 206, 235, 0.8);
+      border-radius: 10px;
+      z-index: -1;
+      transform: translateX(0);
+      transition: width 0.3s ease;
+    }
+    .banner-container.extended::after {
+      width: 150%;
+      transform: translateX(20%);
+    }
+  </style>
+</head>
+<body style="padding-top: 70px;">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <img src="https://primemartdeals.com/wp-content/uploads/2024/08/Logo-13.png" alt="Prime Mart Logo" style="height: 40px;">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="/">HOME</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/about">ABOUT US</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/shop">SHOP</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/contact">CONTACT</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <% if (session.user) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/cart">CART | ₹<span id="cart-total-nav">0.00</span></a>
+            </li>
+            <li class="nav-item">
+              <span class="nav-link">Welcome, <%= session.user %></span>
+            </li>
+            <li class="nav-item">
+              <div class="search-container">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" class="search-bar" placeholder="Search...">
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-outline-danger" href="/logout">LOGOUT</a>
+            </li>
+          <% } else { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/cart">CART | ₹<span id="cart-total-nav">0.00</span></a>
+            </li>
+            <li class="nav-item">
+              <div class="search-container">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" class="search-bar" placeholder="Search...">
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-outline-primary" href="#" data-bs-toggle="modal" data-bs-target="#authModal" data-form="login">LOGIN</a>
+            </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Auth Modal -->
+  <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="row gx-4">
+            <!-- Login Form -->
+            <div class="col-md-6 login-section">
+              <h3 class="mb-4">LOGIN</h3>
+              <form id="loginForm" action="/login" method="POST">
+                <div class="mb-3">
+                  <label for="loginUsername" class="form-label">Username or email address <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="loginUsername" name="username" required>
+                </div>
+                <div class="mb-3">
+                  <label for="loginPassword" class="form-label">Password <span class="text-danger">*</span></label>
+                  <input type="password" class="form-control" id="loginPassword" name="password" required>
+                </div>
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
+                  <label class="form-check-label" for="rememberMe">Remember me</label>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">LOG IN</button>
+                <p class="mt-3"><a href="#" class="text-muted">Lost your password?</a></p>
+              </form>
+            </div>
+            <!-- Register Form -->
+            <div class="col-md-6 register-section">
+              <h3 class="mb-4">REGISTER</h3>
+              <form id="registerForm" action="/register" method="POST">
+                <div class="mb-3">
+                  <label for="registerUsername" class="form-label">Username <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="registerUsername" name="username" required>
+                </div>
+                <div class="mb-3">
+                  <label for="registerEmail" class="form-label">Email address <span class="text-danger">*</span></label>
+                  <input type="email" class="form-control" id="registerEmail" name="email" required>
+                </div>
+                <div class="mb-3">
+                  <label for="registerPassword" class="form-label">Password <span class="text-danger">*</span></label>
+                  <input type="password" class="form-control" id="registerPassword" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">REGISTER</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section with Banner -->
+  <section class="hero-section text-center py-5">
+    <div class="hero-background">
+      <!-- Individual images for the four models -->
+      <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f" alt="Model 1" class="hero-model model-1">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c" alt="Model 2" class="hero-model model-2">
+      <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab" alt="Model 3" class="hero-model model-3">
+      <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b" alt="Model 4" class="hero-model model-4">
+    </div>
+    <div class="container">
+      <div class="banner-container">
+        <h3 class="display-4 text-white">It has Finally started…</h3>
+        <h2 class="display-5 fw-bold text-white">HUGE SALE UP TO 70% OFF</h2>
+      </div>
+      <p class="lead mb-4 text-white">Top Brand Clothing's</p>
+      <a href="/shop" class="btn btn-primary btn-lg" style="background-color: #ff6200; border-color: #ff6200;">SHOP NOW</a>
+    </div>
+    <div class="snowflakes">
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">❄</div>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="featured-products py-5">
+    <div class="container">
+      <h2 class="text-center mb-5">BEST SELLING PRODUCTS</h2>
+      <div class="row" id="product-list">
+        <!-- Products will be dynamically added here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-purple text-white py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h5>ABOUT US</h5>
+          <p>
+            Welcome to Prime Mart, the ultimate destination for premium BRANDED clothing. We specialize in offering a curated selection of high-quality, stylish apparel from top global brands. Our collection is designed for fashion-conscious individuals.
+          </p>
+        </div>
+        <div class="col-md-4">
+          <h5>QUICK LINKS</h5>
+          <ul class="list-unstyled">
+            <li><a href="/about" class="text-white">About us</a></li>
+            <li><a href="/privacy" class="text-white">Privacy Policy</a></li>
+            <li><a href="/terms" class="text-white">Terms and Conditions</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5>REACH US AT</h5>
+          <p>PRIME MART DEALS</p>
+          <p><a href="mailto:support@classicstore.co" class="text-white">support@classicstore.co</a></p>
+        </div>
+      </div>
+      <div class="text-center mt-3">
+        <p>© 2025 Prime Mart. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/scripts.js"></script>
+  <script>
+    // Search bar toggle functionality
+    document.querySelector('.search-icon').addEventListener('click', function() {
+      const searchBar = document.querySelector('.search-bar');
+      searchBar.classList.toggle('active');
+      if (searchBar.classList.contains('active')) {
+        searchBar.focus();
+      }
+    });
+
+    // Banner background extension on load
+    document.addEventListener('DOMContentLoaded', () => {
+      const banner = document.querySelector('.banner-container');
+      setTimeout(() => {
+        banner.classList.add('extended');
+      }, 500);
+    });
+
+    // Simulated product data
+    const products = [
+      { id: 1, name: "Adidas Mens Blue Classic Tracksuit", price: 1999.00, originalPrice: 4999.00, image: "https://images.unsplash.com/photo-1599058917212-d750089bc07e" },
+      { id: 2, name: "Adidas Mens Black Classic Tracksuit", price: 2099.00, originalPrice: 5099.00, image: "https://images.unsplash.com/photo-1617019114580-58e139fa5289" },
+      { id: 3, name: "Adidas White Zip-Front Tracksuit", price: 2990.00, originalPrice: 4999.00, image: "https://images.unsplash.com/photo-1618354691551-7a3f04edd6aa" },
+      { id: 4, name: "Nike Mens Red Hoodie", price: 2499.00, originalPrice: 5999.00, image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990" },
+      { id: 5, name: "Puma Mens Grey Joggers", price: 1799.00, originalPrice: 3999.00, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c" },
+      { id: 6, name: "Jordan Mens Green Tracksuit", price: 2999.00, originalPrice: 6999.00, image: "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f" },
+      { id: 7, name: "Under Armour Mens Blue Jacket", price: 3499.00, originalPrice: 7999.00, image: "https://images.unsplash.com/photo-1551488831-00ddcb6c0a3a" },
+      { id: 8, name: "Reebok Mens Black Hoodie", price: 2299.00, originalPrice: 5499.00, image: "https://images.unsplash.com/photo-1574182245586-1d2d5e47c62b" },
+      { id: 9, name: "Adidas Mens Yellow Tracksuit", price: 2799.00, originalPrice: 6499.00, image: "https://images.unsplash.com/photo-1618517351616-38fb9e37d39e" },
+      { id: 10, name: "Nike Mens White Sneakers", price: 3999.00, originalPrice: 8999.00, image: "https://images.unsplash.com/photo-1607522370275-f14206abe5d3" },
+      { id: 11, name: "Puma Mens Red Tracksuit", price: 2599.00, originalPrice: 5999.00, image: "https://images.unsplash.com/photo-1626240734709-95e39e7c6386" },
+      { id: 12, name: "Jordan Mens Black Hoodie", price: 3199.00, originalPrice: 7499.00, image: "https://images.unsplash.com/photo-1590658006821-04f4008d5717" },
+      { id: 13, name: "Adidas Mens Grey Joggers", price: 1899.00, originalPrice: 4899.00, image: "https://images.unsplash.com/photo-1604272490182-1e5f0e3a0e32" },
+      { id: 14, name: "Nike Mens Blue Tracksuit", price: 2899.00, originalPrice: 6999.00, image: "https://images.unsplash.com/photo-1612902376491-7a8a99b424e8" },
+      { id: 15, name: "Puma Mens White Jacket", price: 3299.00, originalPrice: 7999.00, image: "https://images.unsplash.com/photo-1600585153490-76fb20a0d33b" }
+    ];
+
+    // Function to display products
+    function displayProducts() {
+      const productList = document.getElementById('product-list');
+      console.log("Total products to display:", products.length);
+      products.forEach(product => {
+        console.log("Rendering product:", product.name);
+        const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+        const productCard = `
+          <div class="col-md-4 mb-4 position-relative">
+            <div class="card h-100">
+              <div class="product-card-container">
+                <img src="${product.image}" class="card-img-top" alt="${product.name}" onload="console.log('Successfully loaded image for ${product.name}: ${product.image}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load image for ${product.name}: ${product.image}')">
+                <a href="/products" class="btn btn-primary quick-view quick-view-overlay">QUICK VIEW</a>
+              </div>
+              <div class="discount-badge">${discount}%</div>
+              <div class="card-body text-center">
+                <h5 class="card-title">${product.name}</h5>
+                <div class="star-rating mb-2">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                </div>
+                <p class="card-text">
+                  <span class="text-decoration-line-through text-muted">₹${product.originalPrice.toFixed(2)}</span>
+                  <span class="text-danger fw-bold">₹${product.price.toFixed(2)}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        `;
+        productList.innerHTML += productCard;
+      });
+    }
+
+    // Update cart total in navbar
+    function updateCartTotal() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      document.getElementById('cart-total-nav').textContent = total.toFixed(2);
+    }
+
+    // Load products and cart total on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      displayProducts();
+      updateCartTotal();
+    });
+  </script>
+</body>
+</html>

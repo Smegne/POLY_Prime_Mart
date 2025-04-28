@@ -1,0 +1,285 @@
+body {
+  background-color: #f8f9fa;
+  font-family: Arial, sans-serif;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-nav .nav-link {
+  color: #0056b3;
+  font-weight: 500;
+}
+
+/* Modal Styling */
+.modal-content {
+  border-radius: 0;
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modal-body {
+  padding: 40px;
+}
+
+.login-section, .register-section {
+  padding: 20px 30px;
+}
+
+.login-section {
+  border-right: 2px solid #1e4166; /* Darker and thicker divider */
+}
+
+.login-section h3, .register-section h3 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.form-label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.form-control {
+  border-radius: 0;
+  border: 2px solid #ced4da;
+  padding: 12px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s;
+}
+
+.form-control:focus {
+  border-color: #1e4166;
+  box-shadow: none;
+}
+
+.form-check {
+  margin-bottom: 20px;
+}
+
+.form-check-input {
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: 0.2em;
+}
+
+.form-check-label {
+  font-size: 0.9rem;
+  margin-left: 8px;
+}
+
+.btn-primary {
+  background-color: #1e4166; /* Darker blue from screenshot */
+  border-color: #1e4166;
+  border-radius: 0;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+  background-color: #173452;
+  border-color: #173452;
+}
+
+.text-muted {
+  font-size: 0.85rem;
+  color: #666 !important;
+}
+
+.text-muted:hover {
+  color: #0056b3 !important;
+}
+
+.hero-section {
+  background-color: #fff;
+  position: relative;
+  padding: 60px 0;
+  text-align: center;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.hero-model {
+  position: absolute;
+  height: 100%;
+  object-fit: cover;
+}
+
+.model-1 {
+  left: 0;
+  width: 20%;
+}
+
+.model-2 {
+  left: 20%;
+  width: 30%;
+  z-index: 1;
+}
+
+.model-3 {
+  right: 20%;
+  width: 30%;
+}
+
+.model-4 {
+  right: 0;
+  width: 20%;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-section h1 {
+  font-size: 2.5rem;
+  font-weight: normal;
+}
+
+.hero-section h2 {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+}
+
+/* Snowflake Animation */
+.snowflakes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.snowflake {
+  color: white;
+  font-size: 1em;
+  position: absolute;
+  top: -10%;
+  opacity: 0.8;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  0% {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh);
+  }
+}
+
+/* Randomize snowflake positions and animation durations */
+.snowflake:nth-child(1) { left: 10%; animation-duration: 10s; }
+.snowflake:nth-child(2) { left: 20%; animation-duration: 12s; animation-delay: 1s; }
+.snowflake:nth-child(3) { left: 30%; animation-duration: 14s; }
+.snowflake:nth-child(4) { left: 40%; animation-duration: 10s; animation-delay: 2s; }
+.snowflake:nth-child(5) { left: 50%; animation-duration: 12s; }
+.snowflake:nth-child(6) { left: 60%; animation-duration: 14s; animation-delay: 1s; }
+.snowflake:nth-child(7) { left: 70%; animation-duration: 10s; }
+.snowflake:nth-child(8) { left: 80%; animation-duration: 12s; animation-delay: 3s; }
+.snowflake:nth-child(9) { left: 90%; animation-duration: 14s; }
+.snowflake:nth-child(10) { left: 5%; animation-duration: 10s; animation-delay: 2s; }
+
+.featured-products, .products-section, .cart-section, .wishlist-section, .login-section, .register-section, .checkout-section {
+  padding: 40px 0;
+}
+
+.card {
+  transition: transform 0.3s;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-img-top {
+  height: 300px;
+  object-fit: cover;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #ff6200;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.star-rating i {
+  color: #ffc107;
+}
+
+.text-danger {
+  font-size: 1.2rem;
+}
+
+.text-muted.text-decoration-line-through {
+  font-size: 0.9rem;
+  margin-right: 10px;
+}
+
+.btn-outline-secondary {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f0f2f4;
+  color: white;
+}
+
+.btn-primary {
+  background-color: #32d6c8;
+  border-color: #61e1da;
+}
+
+.btn-primary:hover {
+  background-color: #50d5e7;
+  border-color: hsl(172, 69%, 64%);
+}
+
+.bg-purple {
+  background-color: #429fc1;
+}
+
+footer a {
+  color: white;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}

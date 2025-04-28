@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prime Mart - Products</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      padding-top: 56px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <img src="https://primemartdeals.com/wp-content/uploads/2024/08/Logo-13.png" alt="Prime Mart Logo" style="height: 40px;">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">HOME</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/about">ABOUT US</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/products">SHOP</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/contact">CONTACT</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <% if (session.user) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/wishlist">WISHLIST</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/cart">CART | ₹<span id="cart-total-nav">0.00</span></a>
+            </li>
+            <li class="nav-item">
+              <span class="nav-link">Welcome, <%= session.user %></span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-outline-danger" href="/logout">LOGOUT</a>
+            </li>
+          <% } else { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/wishlist">WISHLIST</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/cart">CART | ₹<span id="cart-total-nav">0.00</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-outline-primary me-2" href="/login">LOGIN</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-primary text-white" href="/register">REGISTER</a>
+            </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Products Section -->
+  <section class="products-section py-5">
+    <div class="container">
+      <h2 class="text-center mb-5">LATEST</h2>
+      <div class="row" id="latest-products">
+        <!-- Latest products will be dynamically added here -->
+      </div>
+      <h2 class="text-center mt-5 mb-5">BEST SELLING</h2>
+      <div class="row" id="best-selling-products">
+        <!-- Best selling products will be dynamically added here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-purple text-white py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h5>ABOUT US</h5>
+          <p>
+            Welcome to https://primemartdeals.com (managed by VA Fashion), where we blend European elegance with Indian sensibility in our stylish bottom wear. Founded in 2022 by Alok, a visionary entrepreneur with a passion for fashion, our brand is all about making value fashion accessible to everyone. With a dedicated team that brings over 15 years of experience in the textile industry, we are committed to creating high-quality apparel that resonates with the vibrant spirit of Gen Z and Millennials in India.
+
+            At VA Fashion, we understand that fashion is more than just clothing; it’s a way to express your individuality and values. Our mission is to provide stylish bottom wear for all genders, ensuring that everyone can find something that fits their unique style and budget. We know that today’s youth seek clothing that not only looks great but also feels comfortable and practical. That’s why we draw inspiration from the latest European fashion trends while keeping in mind the needs of the Indian climate.
+            
+            All our products are designed and crafted in our own manufacturing unit in Meerut, India. This allows us to maintain strict quality control while supporting local artisans and their families. Each piece of clothing we create is a labour of love, showcasing the incredible craftsmanship of our skilled artisans who pour their heart and soul into every stitch.
+            
+            Our collections feature a wide variety of styles, from chic trousers to stylish joggers. We believe that fashion should be fun and expressive, allowing you to showcase your personality effortlessly. Additionally, we prioritize sustainability in our production processes. By using eco-friendly materials and ethical manufacturing practices, we aim to minimize our environmental impact and promote a more sustainable future.
+            
+            At VA Fashion, we’re not just about selling clothes; we’re building a community that values inclusivity, sustainability, and style. We invite you to explore our collections and discover how our pieces can elevate your wardrobe while making a positive impact. Join the VA Fashion family, where your fashion journey begins with quality, value, and a touch of European flair. Together, let’s redefine what it means to be fashionable in India!
+          </p>
+        </div>
+        <div class="col-md-4">
+          <h5>QUICK LINKS</h5>
+          <ul class="list-unstyled">
+            <li><a href="/about" class="text-white">About us</a></li>
+            <li><a href="/privacy" class="text-white">Privacy Policy</a></li>
+            <li><a href="/terms" class="text-white">Terms and Conditions</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5>REACH US AT</h5>
+          <p>PRIME MART DEALS</p>
+          <p><a href="mailto:support@classicstore.co" class="text-white">support@classicstore.co</a></p>
+        </div>
+      </div>
+      <div class="text-center mt-3">
+        <p>© 2025 Prime Mart. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Simulated product data
+    const latestProducts = [
+      { id: 1, name: "Adidas Men's Striped Regular Fit Shorts", price: 599.00, originalPrice: 2299.00, image: "https://images.unsplash.com/photo-1599058917212-d750089bc07e" },
+      { id: 2, name: "Mens Adidas Tiro 24 Shorts", price: 699.00, originalPrice: 2499.00, image: "https://images.unsplash.com/photo-1622470953794-45b8eb1a1d7a" },
+      { id: 3, name: "Adidas Mens Jude Bellingham Track Pants", price: 1299.00, originalPrice: 4999.00, image: "https://images.unsplash.com/photo-1618354691551-7a3f04edd6aa" },
+      { id: 4, name: "Mens Adidas Red Tiro 24 Shorts", price: 649.00, originalPrice: 2399.00, image: "https://images.unsplash.com/photo-1626684496920-9f7e4972b8f9" }
+    ];
+
+    const bestSellingProducts = [
+      { id: 5, name: "Adidas Mens Blue Classic Tracksuit", price: 1999.00, originalPrice: 4999.00, image: "https://images.unsplash.com/photo-1599058917212-d750089bc07e" },
+      { id: 6, name: "Adidas Mens Black Classic Tracksuit", price: 2099.00, originalPrice: 5099.00, image: "https://images.unsplash.com/photo-1617019114580-58e139fa5289" },
+      { id: 7, name: "Adidas White Zip-Front Tracksuit", price: 2990.00, originalPrice: 4999.00, image: "https://images.unsplash.com/photo-1618354691551-7a3f04edd6aa" },
+      { id: 8, name: "Nike Mens Red Hoodie", price: 2499.00, originalPrice: 5999.00, image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990" },
+      { id: 9, name: "Puma Mens Grey Joggers", price: 1799.00, originalPrice: 3999.00, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c" },
+      { id: 10, name: "Jordan Mens Green Tracksuit", price: 2999.00, originalPrice: 6999.00, image: "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f" },
+      { id: 11, name: "Under Armour Mens Blue Jacket", price: 3499.00, originalPrice: 7999.00, image: "https://images.unsplash.com/photo-1551488831-00ddcb6c0a3a" },
+      { id: 12, name: "Reebok Mens Black Hoodie", price: 2299.00, originalPrice: 5499.00, image: "https://images.unsplash.com/photo-1574182245586-1d2d5e47c62b" },
+      { id: 13, name: "Adidas Mens Yellow Tracksuit", price: 2799.00, originalPrice: 6499.00, image: "https://images.unsplash.com/photo-1618517351616-38fb9e37d39e" },
+      { id: 14, name: "Nike Mens White Sneakers", price: 3999.00, originalPrice: 8999.00, image: "https://images.unsplash.com/photo-1607522370275-f14206abe5d3" },
+      { id: 15, name: "Puma Mens Red Tracksuit", price: 2599.00, originalPrice: 5999.00, image: "https://images.unsplash.com/photo-1626240734709-95e39e7c6386" },
+      { id: 16, name: "Jordan Mens Black Hoodie", price: 3199.00, originalPrice: 7499.00, image: "https://images.unsplash.com/photo-1590658006821-04f4008d5717" },
+      { id: 17, name: "Adidas Mens Grey Joggers", price: 1899.00, originalPrice: 4899.00, image: "https://images.unsplash.com/photo-1604272490182-1e5f0e3a0e32" },
+      { id: 18, name: "Nike Mens Blue Tracksuit", price: 2899.00, originalPrice: 6999.00, image: "https://images.unsplash.com/photo-1612902376491-7a8a99b424e8" },
+      { id: 19, name: "Puma Mens White Jacket", price: 3299.00, originalPrice: 7999.00, image: "https://images.unsplash.com/photo-1600585153490-76fb20a0d33b" },
+      { id: 20, name: "Nike Mens Black Running Shorts", price: 799.00, originalPrice: 2999.00, image: "https://images.unsplash.com/photo-1591195853828-11ae37d9047d" },
+      { id: 21, name: "Puma Mens Blue Hoodie", price: 2699.00, originalPrice: 6499.00, image: "https://images.unsplash.com/photo-1599058918144-1ffabb6ab9a0" },
+      { id: 22, name: "Adidas Mens Red Track Jacket", price: 2399.00, originalPrice: 5999.00, image: "https://images.unsplash.com/photo-1603798129748-947ef5d91b76" },
+      { id: 23, name: "Reebok Mens White Sneakers", price: 3599.00, originalPrice: 7999.00, image: "https://images.unsplash.com/photo-1605408499391-6368c6ef265c" },
+      { id: 24, name: "Jordan Mens Grey Tracksuit", price: 3099.00, originalPrice: 7499.00, image: "https://images.unsplash.com/photo-1611859266238-4b4612a7b0e0" },
+      { id: 25, name: "Under Armour Mens Black T-Shirt", price: 1499.00, originalPrice: 3499.00, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a" },
+      { id: 26, name: "Nike Mens Green Joggers", price: 2199.00, originalPrice: 4999.00, image: "https://images.unsplash.com/photo-1592296932948-9996f66602cb" },
+      { id: 27, name: "Puma Mens Black Backpack", price: 1999.00, originalPrice: 3999.00, image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62" },
+      { id: 28, name: "Adidas Mens White Polo Shirt", price: 1799.00, originalPrice: 4299.00, image: "https://images.unsplash.com/photo-1603400521630-9f5de0c99bf0" },
+      { id: 29, name: "Reebok Mens Blue Track Pants", price: 1899.00, originalPrice: 4599.00, image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ac7d8" },
+      { id: 30, name: "Jordan Mens Red Sneakers", price: 4299.00, originalPrice: 9999.00, image: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa" },
+      { id: 31, name: "Nike Mens Yellow T-Shirt", price: 1299.00, originalPrice: 2999.00, image: "https://images.unsplash.com/photo-1583744946564-b52acfaf769c" },
+      { id: 32, name: "Puma Mens Green Jacket", price: 3399.00, originalPrice: 8499.00, image: "https://images.unsplash.com/photo-1603782638877-6c5003f8e142" }
+    ];
+
+    // Function to display products
+    function displayProducts(containerId, productList) {
+      const productListElement = document.getElementById(containerId);
+      productList.forEach(product => {
+        const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+        const productCard = `
+          <div class="col-md-3 mb-4 position-relative">
+            <div class="card h-100">
+              <img src="${product.image}" class="card-img-top" alt="${product.name}" onload="console.log('Successfully loaded image for ${product.name}: ${product.image}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load image for ${product.name}: ${product.image}')">
+              <div class="discount-badge">${discount}%</div>
+              <div class="card-body text-center">
+                <h5 class="card-title">${product.name}</h5>
+                <div class="star-rating mb-2">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                </div>
+                <p class="card-text">
+                  <span class="text-decoration-line-through text-muted">₹${product.originalPrice.toFixed(2)}</span>
+                  <span class="text-danger fw-bold">₹${product.price.toFixed(2)}</span>
+                </p>
+                <div class="d-flex justify-content-center gap-2">
+                  <button class="btn btn-primary quick-view" onclick="addToCart(${product.id})">ADD TO CART</button>
+                  <button class="btn btn-outline-secondary" onclick="addToWishlist(${product.id})">WISHLIST</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        productListElement.innerHTML += productCard;
+      });
+    }
+
+    // Add to cart
+    function addToCart(productId) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const allProducts = [...latestProducts, ...bestSellingProducts];
+      const product = allProducts.find(p => p.id === productId);
+      cart.push(product);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartTotal();
+      alert(`${product.name} added to cart!`);
+    }
+
+    // Add to wishlist
+    function addToWishlist(productId) {
+      let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+      const allProducts = [...latestProducts, ...bestSellingProducts];
+      const product = allProducts.find(p => p.id === productId);
+      if (!wishlist.some(item => item.id === productId)) {
+        wishlist.push(product);
+        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        alert(`${product.name} added to wishlist!`);
+      } else {
+        alert(`${product.name} is already in your wishlist!`);
+      }
+    }
+
+    // Update cart total in navbar
+    function updateCartTotal() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      document.getElementById('cart-total-nav').textContent = total.toFixed(2);
+    }
+
+    // Load products on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      displayProducts('latest-products', latestProducts);
+      displayProducts('best-selling-products', bestSellingProducts);
+      updateCartTotal();
+    });
+  </script>
+</body>
+</html>
