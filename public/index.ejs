@@ -7,160 +7,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="/styles.css">
-  <style>
-    /* Ensure the product card container is positioned relatively */
-    .product-card-container {
-      position: relative;
-    }
-
-    /* Style for the Quick View button overlay */
-    .quick-view-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    /* Show Quick View button on hover over the image */
-    .product-card-container:hover .quick-view-overlay {
-      opacity: 1;
-    }
-
-    /* Optional: Dim the image on hover to make the button stand out */
-    .product-card-container:hover .card-img-top {
-      opacity: 0.8;
-    }
-
-    /* Enhanced snow effect styles */
-    .snowflakes {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .snowflake {
-      color: #fff;
-      font-size: 1.5em;
-      font-family: Arial, sans-serif;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-      opacity: 0.9;
-      position: absolute;
-      animation: fall linear infinite;
-    }
-
-    @keyframes fall {
-      0% {
-        opacity: 0.5;
-        transform: translateY(0vh);
-      }
-      20% {
-        opacity: 0.9;
-      }
-      100% {
-        opacity: 0.5;
-        transform: translateY(100vh);
-      }
-    }
-
-    /* Generate varied animations for snowflakes */
-    .snowflake:nth-child(odd) {
-      animation-duration: 10s;
-    }
-
-    .snowflake:nth-child(even) {
-      animation-duration: 15s;
-    }
-
-    .snowflake:nth-child(3n) {
-      animation-duration: 12s;
-    }
-
-    /* Distribute snowflakes across the screen */
-    .snowflake:nth-child(1) { left: 5%; animation-delay: 0s; }
-    .snowflake:nth-child(2) { left: 10%; animation-delay: 1s; }
-    .snowflake:nth-child(3) { left: 15%; animation-delay: 2s; }
-    .snowflake:nth-child(4) { left: 20%; animation-delay: 0.5s; }
-    .snowflake:nth-child(5) { left: 25%; animation-delay: 3s; }
-    .snowflake:nth-child(6) { left: 30%; animation-delay: 1.5s; }
-    .snowflake:nth-child(7) { left: 35%; animation-delay: 4s; }
-    .snowflake:nth-child(8) { left: 40%; animation-delay: 2.5s; }
-    .snowflake:nth-child(9) { left: 45%; animation-delay: 5s; }
-    .snowflake:nth-child(10) { left: 50%; animation-delay: 0s; }
-    .snowflake:nth-child(11) { left: 55%; animation-delay: 1s; }
-    .snowflake:nth-child(12) { left: 60%; animation-delay: 2s; }
-    .snowflake:nth-child(13) { left: 65%; animation-delay: 0.5s; }
-    .snowflake:nth-child(14) { left: 70%; animation-delay: 3s; }
-    .snowflake:nth-child(15) { left: 75%; animation-delay: 1.5s; }
-    .snowflake:nth-child(16) { left: 80%; animation-delay: 4s; }
-    .snowflake:nth-child(17) { left: 85%; animation-delay: 2.5s; }
-    .snowflake:nth-child(18) { left: 90%; animation-delay: 5s; }
-    .snowflake:nth-child(19) { left: 95%; animation-delay: 0s; }
-    .snowflake:nth-child(20) { left: 8%; animation-delay: 2s; }
-    .snowflake:nth-child(21) { left: 12%; animation-delay: 3s; }
-    .snowflake:nth-child(22) { left: 18%; animation-delay: 1s; }
-    .snowflake:nth-child(23) { left: 22%; animation-delay: 4s; }
-    .snowflake:nth-child(24) { left: 28%; animation-delay: 2.5s; }
-    .snowflake:nth-child(25) { left: 32%; animation-delay: 0.5s; }
-
-    /* Search bar styles */
-    .search-container {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-    .search-icon {
-      cursor: pointer;
-      font-size: 1.2rem;
-      color: #333;
-    }
-    .search-bar {
-      width: 0;
-      opacity: 0;
-      border: none;
-      border-radius: 5px;
-      padding: 5px 10px;
-      margin-left: 10px;
-      transition: width 0.3s ease, opacity 0.3s ease;
-    }
-    .search-bar.active {
-      width: 200px;
-      opacity: 1;
-    }
-    .search-bar:focus {
-      outline: none;
-      border: 1px solid #ff6200;
-    }
-
-    /* Banner styles */
-    .banner-container {
-      position: relative;
-      display: inline-block;
-      text-align: center;
-    }
-    .banner-container::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(135, 206, 235, 0.8);
-      border-radius: 10px;
-      z-index: -1;
-      transform: translateX(0);
-      transition: width 0.3s ease;
-    }
-    .banner-container.extended::after {
-      width: 150%;
-      transform: translateX(20%);
-    }
-  </style>
 </head>
 <body style="padding-top: 70px;">
   <!-- Navbar -->
@@ -190,10 +36,12 @@
         <ul class="navbar-nav ms-auto">
           <% if (session.user) { %>
             <li class="nav-item">
-              <a class="nav-link" href="/cart">CART | ₹<span id="cart-total-nav">0.00</span></a>
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
             </li>
             <li class="nav-item">
-              <span class="nav-link">Welcome, <%= session.user %></span>
+              <span class="nav-link"> <li class="nav-item">
+                <span class="nav-link">My Account</span>
+              </li></span>
             </li>
             <li class="nav-item">
               <div class="search-container">
@@ -206,13 +54,13 @@
             </li>
           <% } else { %>
             <li class="nav-item">
-              <a class="nav-link" href="/cart">CART | ₹<span id="cart-total-nav">0.00</span></a>
-            </li>
-            <li class="nav-item">
               <div class="search-container">
                 <i class="bi bi-search search-icon"></i>
                 <input type="text" class="search-bar" placeholder="Search...">
               </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
             </li>
             <li class="nav-item">
               <a class="nav-link btn btn-outline-primary" href="#" data-bs-toggle="modal" data-bs-target="#authModal" data-form="login">LOGIN</a>
@@ -222,6 +70,20 @@
       </div>
     </div>
   </nav>
+
+  <!-- Cart Sidebar -->
+  <div id="cd-shadow-layer"></div>
+  <div id="cart-sidebar">
+    <div class="cart-sidebar-header">
+      <h2>Your Cart</h2>
+      <button class="close-cart-sidebar">&times;</button>
+    </div>
+    <div id="cart-sidebar-items"></div>
+    <div class="cart-sidebar-footer">
+      <p>Total: ₹<span id="cart-sidebar-total">0.00</span></p>
+      <a href="/checkout" class="btn btn-primary w-100">Proceed to Checkout</a>
+    </div>
+  </div>
 
   <!-- Auth Modal -->
   <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
@@ -277,7 +139,6 @@
   <!-- Hero Section with Banner -->
   <section class="hero-section text-center py-5">
     <div class="hero-background">
-      <!-- Individual images for the four models -->
       <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f" alt="Model 1" class="hero-model model-1">
       <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c" alt="Model 2" class="hero-model model-2">
       <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab" alt="Model 3" class="hero-model model-3">
@@ -323,9 +184,29 @@
   <!-- Featured Products -->
   <section class="featured-products py-5">
     <div class="container">
-      <h2 class="text-center mb-5">BEST SELLING PRODUCTS</h2>
+      <h2 class="text-center mb-5">FEATURED PRODUCTS</h2>
       <div class="row" id="product-list">
         <!-- Products will be dynamically added here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest and Best Selling Products -->
+  <section class="latest-best-selling py-5">
+    <div class="container">
+      <div class="narrow-container">
+        <div class="row">
+          <!-- Latest Products -->
+          <div class="col-md-6 latest-section">
+            <h2 class="mb-4">LATEST</h2>
+            <div id="latest-product-list"></div>
+          </div>
+          <!-- Best Selling Products -->
+          <div class="col-md-6">
+            <h2 class="mb-4">BEST SELLING</h2>
+            <div id="best-selling-product-list"></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -381,6 +262,29 @@
       }, 500);
     });
 
+    // Cart sidebar toggle functionality
+    const cartTrigger = document.getElementById('cart-trigger');
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const shadowLayer = document.getElementById('cd-shadow-layer');
+    const closeCartBtn = document.querySelector('.close-cart-sidebar');
+
+    cartTrigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      cartSidebar.classList.add('active');
+      shadowLayer.classList.add('active');
+      updateCartSidebar();
+    });
+
+    closeCartBtn.addEventListener('click', () => {
+      cartSidebar.classList.remove('active');
+      shadowLayer.classList.remove('active');
+    });
+
+    shadowLayer.addEventListener('click', () => {
+      cartSidebar.classList.remove('active');
+      shadowLayer.classList.remove('active');
+    });
+
     // Simulated product data
     const products = [
       { id: 1, name: "Adidas Mens Blue Classic Tracksuit", price: 1999.00, originalPrice: 4999.00, image: "https://images.unsplash.com/photo-1599058917212-d750089bc07e" },
@@ -400,39 +304,72 @@
       { id: 15, name: "Puma Mens White Jacket", price: 3299.00, originalPrice: 7999.00, image: "https://images.unsplash.com/photo-1600585153490-76fb20a0d33b" }
     ];
 
-    // Function to display products
-    function displayProducts() {
-      const productList = document.getElementById('product-list');
-      console.log("Total products to display:", products.length);
-      products.forEach(product => {
-        console.log("Rendering product:", product.name);
-        const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
-        const productCard = `
-          <div class="col-md-4 mb-4 position-relative">
-            <div class="card h-100">
-              <div class="product-card-container">
-                <img src="${product.image}" class="card-img-top" alt="${product.name}" onload="console.log('Successfully loaded image for ${product.name}: ${product.image}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load image for ${product.name}: ${product.image}')">
-                <a href="/products" class="btn btn-primary quick-view quick-view-overlay">QUICK VIEW</a>
+    // Function to create a product card
+    function createProductCard(product) {
+      const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+      return `
+        <div class="col-12 mb-4 position-relative">
+          <div class="card h-100">
+            <div class="product-card-container">
+              <img src="${product.image}" class="card-img-top" alt="${product.name}" onload="console.log('Successfully loaded image for ${product.name}: ${product.image}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load image for ${product.name}: ${product.image}')">
+              <a href="/products" class="btn btn-primary quick-view quick-view-overlay">QUICK VIEW</a>
+            </div>
+            <div class="discount-badge">${discount}%</div>
+            <div class="card-body text-center">
+              <h5 class="card-title">${product.name}</h5>
+              <div class="star-rating mb-2">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
               </div>
-              <div class="discount-badge">${discount}%</div>
-              <div class="card-body text-center">
-                <h5 class="card-title">${product.name}</h5>
-                <div class="star-rating mb-2">
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                </div>
-                <p class="card-text">
-                  <span class="text-decoration-line-through text-muted">₹${product.originalPrice.toFixed(2)}</span>
-                  <span class="text-danger fw-bold">₹${product.price.toFixed(2)}</span>
-                </p>
-              </div>
+              <p class="card-text">
+                <span class="text-decoration-line-through text-muted">₹${product.originalPrice.toFixed(2)}</span>
+                <span class="text-danger fw-bold">₹${product.price.toFixed(2)}</span>
+              </p>
             </div>
           </div>
-        `;
-        productList.innerHTML += productCard;
+        </div>
+      `;
+    }
+
+    // Function to display products in a container
+    function displayProducts(productList, containerId, start, end) {
+      const container = document.getElementById(containerId);
+      const selectedProducts = productList.slice(start, end);
+      selectedProducts.forEach(product => {
+        if (containerId === 'product-list') {
+          const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+          const productCard = `
+            <div class="col-md-4 mb-4 position-relative">
+              <div class="card h-100">
+                <div class="product-card-container">
+                  <img src="${product.image}" class="card-img-top" alt="${product.name}" onload="console.log('Successfully loaded image for ${product.name}: ${product.image}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load image for ${product.name}: ${product.image}')">
+                  <a href="/products" class="btn btn-primary quick-view quick-view-overlay">QUICK VIEW</a>
+                </div>
+                <div class="discount-badge">${discount}%</div>
+                <div class="card-body text-center">
+                  <h5 class="card-title">${product.name}</h5>
+                  <div class="star-rating mb-2">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                  </div>
+                  <p class="card-text">
+                    <span class="text-decoration-line-through text-muted">₹${product.originalPrice.toFixed(2)}</span>
+                    <span class="text-danger fw-bold">₹${product.price.toFixed(2)}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          `;
+          container.innerHTML += productCard;
+        } else {
+          container.innerHTML += createProductCard(product);
+        }
       });
     }
 
@@ -443,9 +380,39 @@
       document.getElementById('cart-total-nav').textContent = total.toFixed(2);
     }
 
+    // Update cart sidebar content
+    function updateCartSidebar() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartItemsContainer = document.getElementById('cart-sidebar-items');
+      const cartTotalElement = document.getElementById('cart-sidebar-total');
+      cartItemsContainer.innerHTML = '';
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p class="text-center">Your cart is empty.</p>';
+      } else {
+        cart.forEach(item => {
+          const cartItem = `
+            <div class="cart-item d-flex align-items-center mb-3">
+              <img src="${item.image}" alt="${item.name}" class="cart-item-img">
+              <div class="cart-item-details ms-3">
+                <h6>${item.name}</h6>
+                <p>₹${item.price.toFixed(2)}</p>
+              </div>
+            </div>
+          `;
+          cartItemsContainer.innerHTML += cartItem;
+        });
+      }
+
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      cartTotalElement.textContent = total.toFixed(2);
+    }
+
     // Load products and cart total on page load
     document.addEventListener('DOMContentLoaded', () => {
-      displayProducts();
+      displayProducts(products, 'product-list', 0, 5);
+      displayProducts(products, 'latest-product-list', 5, 8);
+      displayProducts(products, 'best-selling-product-list', 8, 11);
       updateCartTotal();
     });
   </script>

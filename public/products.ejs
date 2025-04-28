@@ -18,7 +18,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
     <div class="container">
       <a class="navbar-brand" href="/">
-        <img src="https://primemartdeals.com/wp-content/uploads/2024/08/Logo-13.png" alt="Prime Mart Logo" style="height: 40px;">
+        <img src="https://primemartdeals.com/wp-content/uploads/2024/08/Logo-13.png" alt="Prime Mart Logo" style="height: 60px;">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -40,9 +40,7 @@
         </ul>
         <ul class="navbar-nav ms-auto">
           <% if (session.user) { %>
-            <li class="nav-item">
-              <a class="nav-link" href="/wishlist">WISHLIST</a>
-            </li>
+
             <li class="nav-item">
               <a class="nav-link" href="/cart">CART | ₹<span id="cart-total-nav">0.00</span></a>
             </li>
@@ -53,18 +51,14 @@
               <a class="nav-link btn btn-outline-danger" href="/logout">LOGOUT</a>
             </li>
           <% } else { %>
-            <li class="nav-item">
-              <a class="nav-link" href="/wishlist">WISHLIST</a>
-            </li>
+            
             <li class="nav-item">
               <a class="nav-link" href="/cart">CART | ₹<span id="cart-total-nav">0.00</span></a>
             </li>
             <li class="nav-item">
               <a class="nav-link btn btn-outline-primary me-2" href="/login">LOGIN</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link btn btn-primary text-white" href="/register">REGISTER</a>
-            </li>
+           
           <% } %>
         </ul>
       </div>
