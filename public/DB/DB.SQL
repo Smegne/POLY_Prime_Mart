@@ -75,3 +75,58 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+
+
+
+
+-- ################################
+-- Products Table
+CREATE TABLE IF NOT EXISTS products (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  price DECIMAL(10, 2) NOT NULL,
+  discount INT DEFAULT 0,
+  stock VARCHAR(50) NOT NULL
+);
+
+-- Orders Table
+CREATE TABLE IF NOT EXISTS orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  customer VARCHAR(255) NOT NULL,
+  total DECIMAL(10, 2) NOT NULL,
+  status VARCHAR(50) NOT NULL
+);
+
+-- Users Table (Already exists, but ensure it has a 'status' column)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'Active';
+
+-- Support Tickets Table
+CREATE TABLE IF NOT EXISTS support_tickets (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  customer VARCHAR(255) NOT NULL,
+  issue TEXT NOT NULL,
+  status VARCHAR(50) NOT NULL
+);
+
+-- Promotions Table
+CREATE TABLE IF NOT EXISTS promotions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  discount VARCHAR(50) NOT NULL,
+  status VARCHAR(50) NOT NULL
+);
+
+-- Banners Table
+CREATE TABLE IF NOT EXISTS banners (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  message TEXT NOT NULL
+);
+
+-- Roles Table
+CREATE TABLE IF NOT EXISTS roles (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  role VARCHAR(100) NOT NULL,
+  permissions TEXT NOT NULL
+);
