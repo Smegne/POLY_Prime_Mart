@@ -2,7 +2,9 @@ const express = require('express');
 const session = require('express-session');
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
+const bodyParser = require('body-parser');
 const path = require('path');
+
 const app = express();
 const port = 3800;
 
@@ -10,12 +12,13 @@ const port = 3800;
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'public')); // Set views directory to 'public'
 app.use(express.static('public')); // Serve static files from 'public'
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); // Add this to parse JSON for API endpoints
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json()); // Parse JSON for API endpoints
 app.use(session({
-  secret: 'your-secret-key',
+  secret: 'your-secret-key', // Replace with a secure key
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: { secure: false } // Set to true if using HTTPS
 }));
 
 // MySQL connection
@@ -27,8 +30,112 @@ const db = mysql.createConnection({
 });
 
 db.connect(err => {
-  if (err) throw err;
+  if (err) {
+    console.error('MySQL connection failed:', err);
+    process.exit(1);
+  }
   console.log('MySQL connected');
+});
+
+// Create Tables if they don't exist
+// Users Table
+db.query(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    status ENUM('active', 'inactive') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`, err => {
+  if (err) console.error('Error creating users table:', err);
+});
+
+// Products Table
+db.query(`
+  CREATE TABLE IF NOT EXISTS products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    discount INT DEFAULT 0,
+    stock INT NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`, err => {
+  if (err) console.error('Error creating products table:', err);
+});
+
+// Orders Table
+db.query(`
+  CREATE TABLE IF NOT EXISTS orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    status ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  )
+`, err => {
+  if (err) console.error('Error creating orders table:', err);
+});
+
+// Support Tickets Table
+db.query(`
+  CREATE TABLE IF NOT EXISTS support_tickets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    status ENUM('open', 'closed') DEFAULT 'open',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  )
+`, err => {
+  if (err) console.error('Error creating support_tickets table:', err);
+});
+
+// Promotions Table
+db.query(`
+  CREATE TABLE IF NOT EXISTS promotions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    discount_percentage INT NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`, err => {
+  if (err) console.error('Error creating promotions table:', err);
+});
+
+// Banners Table
+db.query(`
+  CREATE TABLE IF NOT EXISTS banners (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    image_url VARCHAR(255) NOT NULL,
+    link VARCHAR(255),
+    alt_text VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`, err => {
+  if (err) console.error('Error creating banners table:', err);
+});
+
+// Roles Table
+db.query(`
+  CREATE TABLE IF NOT EXISTS roles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`, err => {
+  if (err) console.error('Error creating roles table:', err);
 });
 
 // Middleware to check if user is authenticated
@@ -98,7 +205,13 @@ app.get('/order-complete', (req, res) => {
 
 // Admin Dashboard Route (Protected)
 app.get('/admin-dashboard', isAuthenticated, (req, res) => {
-  res.render('admin-dashboard', { session: req.session });
+  db.query("SELECT * FROM products ORDER BY id DESC", (err, products) => {
+    if (err) {
+      console.error('Error fetching products for admin dashboard:', err);
+      return res.status(500).send('Server error');
+    }
+    res.render('admin-dashboard', { session: req.session, products });
+  });
 });
 
 // Register
@@ -106,19 +219,23 @@ app.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    db.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', 
-      [username, email, hashedPassword], 
+    db.query(
+      'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
+      [username, email, hashedPassword],
       (err) => {
         if (err) {
           if (err.code === 'ER_DUP_ENTRY') {
-            return res.send('Error: Username or email already exists');
+            return res.status(400).send('Error: Username or email already exists');
           }
-          throw err;
+          console.error('Error registering user:', err);
+          return res.status(500).send('Error during registration');
         }
         res.redirect('/login');
-      });
+      }
+    );
   } catch (err) {
-    res.send('Error during registration');
+    console.error('Error hashing password:', err);
+    res.status(500).send('Server error');
   }
 });
 
@@ -126,40 +243,51 @@ app.post('/register', async (req, res) => {
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
   db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
-    if (err || results.length === 0) return res.send('Invalid email or password');
-    const match = await bcrypt.compare(password, results[0].password);
-    if (match) {
-      req.session.user = {
-        id: results[0].id,
-        username: results[0].username
-      };
-      res.redirect('/my-account');
-    } else {
-      res.send('Invalid email or password');
+    if (err) {
+      console.error('Error fetching user:', err);
+      return res.status(500).send('Server error');
     }
+    if (results.length === 0) {
+      return res.status(401).send('Invalid email or password');
+    }
+    const user = results[0];
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(401).send('Invalid email or password');
+    }
+    req.session.user = {
+      id: user.id,
+      username: user.username
+    };
+    res.redirect('/my-account');
   });
 });
 
 // Logout
 app.get('/logout', (req, res) => {
-  req.session.destroy();
-  res.redirect('/');
+  req.session.destroy(err => {
+    if (err) {
+      console.error('Error logging out:', err);
+      return res.status(500).send('Server error');
+    }
+    res.redirect('/');
+  });
 });
 
 // Admin Dashboard API Endpoints
 // Product Endpoints
 app.get('/api/products', (req, res) => {
-  db.query("SELECT * FROM products", (err, rows) => {
+  db.query("SELECT * FROM products ORDER BY id DESC", (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
 });
 
 app.post('/api/products', (req, res) => {
-  const { title, price, discount, stock } = req.body;
+  const { title, description, image_url, price, discount, stock, category } = req.body;
   db.query(
-    "INSERT INTO products (title, price, discount, stock) VALUES (?, ?, ?, ?)",
-    [title, price, discount, stock],
+    "INSERT INTO products (title, description, image_url, price, discount, stock, category) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [title, description, image_url, price, discount, stock, category],
     (err, result) => {
       if (err) return res.status(500).json({ error: err.message });
       res.json({ id: result.insertId });

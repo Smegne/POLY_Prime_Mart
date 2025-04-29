@@ -100,10 +100,17 @@
       border: none;
       padding: 5px 15px;
       font-size: 0.9rem;
+      transition: background-color 0.3s ease;
     }
 
     .filter-btn:hover {
       background-color: #5a6268;
+    }
+
+    /* Active state for the filter button */
+    .filter-btn.active {
+      background-color: #6f42c1; /* Purple color to indicate active filters */
+      color: white;
     }
 
     /* Sorting dropdown */
@@ -432,9 +439,7 @@
             <li class="nav-item">
               <a class="nav-link cart-trigger" href="#" id="cart-trigger">
                 <span>CART</span>
-                
                 <span class="cart-badge" id="cart-item-count">0</span>
-             
                 <span>| ₹</span><span id="cart-total-nav">0.00</span>
                 <span class="cart-icon">🛒</span>
               </a>
@@ -442,7 +447,6 @@
             <li class="nav-item">
               <span class="nav-link">My Account</span>
             </li>
-            
             <li class="nav-item">
               <a class="nav-link btn btn-outline-danger" href="/logout">LOGOUT</a>
             </li>
@@ -456,7 +460,6 @@
             <li class="nav-item">
               <a class="nav-link cart-trigger" href="#" id="cart-trigger">
                 <span>CART</span>
-            
                 <span class="cart-badge" id="cart-item-count">0</span>
                 <span>| ₹</span><span id="cart-total-nav">0.00</span>
                 <span class="cart-icon">🛒</span>
@@ -607,17 +610,17 @@
           <div class="price-filter">
             <h5>FILTER BY PRICE</h5>
             <div class="price-range-container">
-              <input type="range" class="price-range" id="min-price" min="500" max="8000" value="500" step="100">
-              <input type="range" class="price-range" id="max-price" min="500" max="8000" value="8000" step="100">
+              <input type="range" class="price-range" id="min-price" min="0" max="10000" value="0" step="100">
+              <input type="range" class="price-range" id="max-price" min="0" max="10000" value="10000" step="100">
             </div>
-            <p>Price: ₹<span id="min-price-value">500</span> – ₹<span id="max-price-value">8000</span></p>
+            <p>Price: ₹<span id="min-price-value">0</span> – ₹<span id="max-price-value">10000</span></p>
             <button class="filter-btn">FILTER</button>
           </div>
         </div>
         <!-- Product Grid -->
         <div class="col-lg-9 col-md-8">
           <div class="sort-section">
-            <p id="results-count">Showing all 15 results</p>
+            <p id="results-count">Loading products...</p>
             <select id="sort-options">
               <option value="popularity">Sort by popularity</option>
               <option value="rating">Sort by average rating</option>
@@ -668,6 +671,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/scripts.js"></script>
   <script>
+    const API_BASE_URL = 'http://localhost:3800/api';
+    const isDebug = true; // Set to false in production to disable console logs
+
     // Search bar toggle functionality
     document.querySelector('.search-icon').addEventListener('click', function() {
       const searchBar = document.querySelector('.search-bar');
@@ -702,342 +708,88 @@
       shadowLayer.classList.remove('active');
     });
 
-    // Product data with multiple images
-    const products = [
-      { 
-        id: 1, 
-        name: "Adidas Mens Blue Classic Tracksuit", 
-        price: 1999.00, 
-        originalPrice: 4999.00, 
-        images: [
-          "https://images.unsplash.com/photo-1599058917212-d750089bc07e", // Front view
-          "https://images.unsplash.com/photo-1617019114580-58e139fa5289", // Side view
-          "https://images.unsplash.com/photo-1618354691551-7a3f04edd6aa"  // Back view
-        ], 
-        rating: 4.0, 
-        category: "Tracksuits", 
-        popularityScore: 90, 
-        shortDescription: "Comfortable and stylish blue tracksuit, perfect for casual wear or workouts.", 
-        fit: "Regular", 
-        bottom: "Drawcord-adjustable", 
-        material: "100% Polyester", 
-        hemCuff: "Ribbed", 
-        colour: "Blue/White", 
-        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)", "XXL (44 inches)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 2, 
-        name: "Adidas Mens Black Classic Tracksuit", 
-        price: 2099.00, 
-        originalPrice: 5099.00, 
-        images: [
-          "https://images.unsplash.com/photo-1617019114580-58e139fa5289", // Front view
-          "https://images.unsplash.com/photo-1599058917212-d750089bc07e", // Side view
-          "https://images.unsplash.com/photo-1618354691551-7a3f04edd6aa"  // Back view
-        ], 
-        rating: 4.2, 
-        category: "Tracksuits", 
-        popularityScore: 85, 
-        shortDescription: "Sleek black tracksuit with a modern fit, ideal for active lifestyles.", 
-        fit: "Regular", 
-        bottom: "Drawcord-adjustable", 
-        material: "100% Polyester", 
-        hemCuff: "Ribbed", 
-        colour: "Black/White", 
-        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)", "XXL (44 inches)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 3, 
-        name: "Adidas White Zip-Front Tracksuit", 
-        price: 2990.00, 
-        originalPrice: 4999.00, 
-        images: [
-          "https://images.unsplash.com/photo-1618354691551-7a3f04edd6aa", // Front view
-          "https://images.unsplash.com/photo-1599058917212-d750089bc07e", // Side view
-          "https://images.unsplash.com/photo-1617019114580-58e139fa5289"  // Back view
-        ], 
-        rating: 3.8, 
-        category: "Tracksuits", 
-        popularityScore: 70, 
-        shortDescription: "White tracksuit with zip-front design, great for sporty looks.", 
-        fit: "Regular", 
-        bottom: "Elastic", 
-        material: "100% Polyester", 
-        hemCuff: "Ribbed", 
-        colour: "White/Black", 
-        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)", "XXL (44 inches)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 4, 
-        name: "Nike Mens Red Hoodie", 
-        price: 2499.00, 
-        originalPrice: 5999.00, 
-        images: [
-          "https://images.unsplash.com/photo-1618354691373-d851c5c3a990", // Front view
-          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", // Side view
-          "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f"  // Back view
-        ], 
-        rating: 4.5, 
-        category: "Hoodies & Sweatshirts", 
-        popularityScore: 95, 
-        shortDescription: "Vibrant red hoodie with soft fleece lining for ultimate comfort.", 
-        fit: "Relaxed", 
-        bottom: "Ribbed", 
-        material: "Cotton Blend", 
-        hemCuff: "Ribbed", 
-        colour: "Red", 
-        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 5, 
-        name: "Puma Mens Grey Joggers", 
-        price: 1799.00, 
-        originalPrice: 3999.00, 
-        images: [
-          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", // Front view
-          "https://images.unsplash.com/photo-1618354691373-d851c5c3a990", // Side view
-          "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f"  // Back view
-        ], 
-        rating: 4.0, 
-        category: "Trackpants", 
-        popularityScore: 60, 
-        shortDescription: "Relaxed grey joggers, perfect for lounging or light exercise.", 
-        fit: "Tapered", 
-        bottom: "Elastic", 
-        material: "Cotton Blend", 
-        hemCuff: "Elastic", 
-        colour: "Grey", 
-        sizes: ["M (32 inches)", "L (34 inches)", "XL (36 inches)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 6, 
-        name: "Jordan Mens Green Tracksuit", 
-        price: 2999.00, 
-        originalPrice: 6999.00, 
-        images: [
-          "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f", // Front view
-          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", // Side view
-          "https://images.unsplash.com/photo-1618354691373-d851c5c3a990"  // Back view
-        ], 
-        rating: 4.3, 
-        category: "Tracksuits", 
-        popularityScore: 80, 
-        shortDescription: "Bold green tracksuit with Jordan branding, designed for style and performance.", 
-        fit: "Regular", 
-        bottom: "Drawcord-adjustable", 
-        material: "100% Polyester", 
-        hemCuff: "Ribbed", 
-        colour: "Green/White", 
-        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 7, 
-        name: "Under Armour Mens Blue Jacket", 
-        price: 3499.00, 
-        originalPrice: 7999.00, 
-        images: [
-          "https://images.unsplash.com/photo-1551488831-00ddcb6c0a3a", // Front view
-          "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f", // Side view
-          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c"  // Back view
-        ], 
-        rating: 4.1, 
-        category: "Jacket", 
-        popularityScore: 75, 
-        shortDescription: "Lightweight blue jacket with weather-resistant fabric.", 
-        fit: "Fitted", 
-        bottom: "Elastic", 
-        material: "Polyester Blend", 
-        hemCuff: "Elastic", 
-        colour: "Blue", 
-        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 8, 
-        name: "Reebok Mens Black Hoodie", 
-        price: 2299.00, 
-        originalPrice: 5499.00, 
-        images: [
-          "https://images.unsplash.com/photo-1574182245586-1d2d5e47c62b", // Front view
-          "https://images.unsplash.com/photo-1551488831-00ddcb6c0a3a", // Side view
-          "https://images.unsplash.com/photo-1574201635302-388dd92a4c3f"  // Back view
-        ], 
-        rating: 4.0, 
-        category: "Hoodies & Sweatshirts", 
-        popularityScore: 65, 
-        shortDescription: "Classic black hoodie with a minimalist design for everyday wear.", 
-        fit: "Relaxed", 
-        bottom: "Ribbed", 
-        material: "Cotton Blend", 
-        hemCuff: "Ribbed", 
-        colour: "Black", 
-        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 9, 
-        name: "Adidas Mens Yellow Tracksuit", 
-        price: 2799.00, 
-        originalPrice: 6499.00, 
-        images: [
-          "https://images.unsplash.com/photo-1618517351616-38fb9e37d39e", // Front view
-          "https://images.unsplash.com/photo-1574182245586-1d2d5e47c62b", // Side view
-          "https://images.unsplash.com/photo-1551488831-00ddcb6c0a3a"  // Back view
-        ], 
-        rating: 4.4, 
-        category: "Tracksuits", 
-        popularityScore: 88, 
-        shortDescription: "Bright yellow tracksuit for a standout athletic look.", 
-        fit: "Regular", 
-        bottom: "Drawcord-adjustable", 
-        material: "100% Polyester", 
-        hemCuff: "Ribbed", 
-        colour: "Yellow/Black", 
-        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)", "XXL (44 inches)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 10, 
-        name: "Nike Mens White Sneakers", 
-        price: 3999.00, 
-        originalPrice: 8999.00, 
-        images: [
-          "https://images.unsplash.com/photo-1607522370275-f14206abe5d3", // Front view
-          "https://images.unsplash.com/photo-1618517351616-38fb9e37d39e", // Side view
-          "https://images.unsplash.com/photo-1574182245586-1d2d5e47c62b"  // Back view
-        ], 
-        rating: 4.6, 
-        category: "Others", 
-        popularityScore: 92, 
-        shortDescription: "Crisp white sneakers with cushioned soles for all-day comfort.", 
-        fit: "Standard", 
-        bottom: "N/A", 
-        material: "Leather/Synthetic", 
-        hemCuff: "N/A", 
-        colour: "White", 
-        sizes: ["M (9 US)", "L (10 US)", "XL (11 US)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 11, 
-        name: "Puma Mens Red Tracksuit", 
-        price: 2599.00, 
-        originalPrice: 5999.00, 
-        images: [
-          "https://images.unsplash.com/photo-1626240734709-95e39e7c6386", // Front view
-          "https://images.unsplash.com/photo-1607522370275-f14206abe5d3", // Side view
-          "https://images.unsplash.com/photo-1618517351616-38fb9e37d39e"  // Back view
-        ], 
-        rating: 4.2, 
-        category: "Tracksuits", 
-        popularityScore: 78, 
-        shortDescription: "Dynamic red tracksuit, perfect for sports and casual outings.", 
-        fit: "Regular", 
-        bottom: "Drawcord-adjustable", 
-        material: "100% Polyester", 
-        hemCuff: "Ribbed", 
-        colour: "Red/White", 
-        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 12, 
-        name: "Jordan Mens Black Hoodie", 
-        price: 3199.00, 
-        originalPrice: 7499.00, 
-        images: [
-          "https://images.unsplash.com/photo-1590658006821-04f4008d5717", // Front view
-          "https://images.unsplash.com/photo-1626240734709-95e39e7c6386", // Side view
-          "https://images.unsplash.com/photo-1607522370275-f14206abe5d3"  // Back view
-        ], 
-        rating: 4.3, 
-        category: "Hoodies & Sweatshirts", 
-        popularityScore: 70, 
-        shortDescription: "Premium black hoodie with iconic Jordan logo.", 
-        fit: "Relaxed", 
-        bottom: "Ribbed", 
-        material: "Cotton Blend", 
-        hemCuff: "Ribbed", 
-        colour: "Black", 
-        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 13, 
-        name: "Adidas Mens Grey Joggers", 
-        price: 1899.00, 
-        originalPrice: 4899.00, 
-        images: [
-          "https://images.unsplash.com/photo-1604272490182-1e5f0e3a0e32", // Front view
-          "https://images.unsplash.com/photo-1590658006821-04f4008d5717", // Side view
-          "https://images.unsplash.com/photo-1626240734709-95e39e7c6386"  // Back view
-        ], 
-        rating: 3.9, 
-        category: "Trackpants", 
-        popularityScore: 55, 
-        shortDescription: "Soft grey joggers with a tapered fit for a sleek look.", 
-        fit: "Tapered", 
-        bottom: "Elastic", 
-        material: "Cotton Blend", 
-        hemCuff: "Elastic", 
-        colour: "Grey", 
-        sizes: ["M (32 inches)", "L (34 inches)", "XL (36 inches)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 14, 
-        name: "Nike Mens Blue Tracksuit", 
-        price: 2899.00, 
-        originalPrice: 6999.00, 
-        images: [
-          "https://images.unsplash.com/photo-1612902376491-7a8a99b424e8", // Front view
-          "https://images.unsplash.com/photo-1604272490182-1e5f0e3a0e32", // Side view
-          "https://images.unsplash.com/photo-1590658006821-04f4008d5717"  // Back view
-        ], 
-        rating: 4.1, 
-        category: "Tracksuits", 
-        popularityScore: 82, 
-        shortDescription: "Blue tracksuit with Nike’s signature comfort and style.", 
-        fit: "Regular", 
-        bottom: "Drawcord-adjustable", 
-        material: "100% Polyester", 
-        hemCuff: "Ribbed", 
-        colour: "Blue/White", 
-        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
-        sku: "N/A" 
-      },
-      { 
-        id: 15, 
-        name: "Puma Mens White Jacket", 
-        price: 3299.00, 
-        originalPrice: 7999.00, 
-        images: [
-          "https://images.unsplash.com/photo-1600585153490-76fb20a0d33b", // Front view
-          "https://images.unsplash.com/photo-1612902376491-7a8a99b424e8", // Side view
-          "https://images.unsplash.com/photo-1604272490182-1e5f0e3a0e32"  // Back view
-        ], 
-        rating: 4.0, 
-        category: "Jacket", 
-        popularityScore: 68, 
-        shortDescription: "White jacket with a modern design, ideal for cool weather.", 
-        fit: "Fitted", 
-        bottom: "Elastic", 
-        material: "Polyester Blend", 
-        hemCuff: "Elastic", 
-        colour: "White", 
-        sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)"], 
-        sku: "N/A" 
-      }
-    ];
-
-    let filteredProducts = [...products];
+    let products = [];
+    let filteredProducts = [];
     let selectedCategory = null;
+    let initialMinPrice = 0;
+    let initialMaxPrice = 10000;
+
+    // Function to retry loading an image
+    function loadImageWithRetry(imgElement, src, productName, retries = 3, delay = 1000) {
+      let attempts = 0;
+      function tryLoad() {
+        imgElement.src = src;
+        imgElement.onerror = () => {
+          attempts++;
+          if (attempts < retries) {
+            setTimeout(tryLoad, delay);
+          } else {
+            imgElement.src = 'https://images.unsplash.com/photo-1556906781-9a412961c28c';
+            if (isDebug) console.error(`Failed to load image for ${productName} after ${retries} attempts: ${src}`);
+          }
+        };
+        if (isDebug) {
+          imgElement.onload = () => console.log(`Successfully loaded image for ${productName}: ${src}`);
+        }
+      }
+      tryLoad();
+    }
+
+    // Function to preload images with a delay to avoid rate limiting
+    function preloadImages(products) {
+      products.forEach((product, index) => {
+        setTimeout(() => {
+          const img = new Image();
+          img.src = product.images[0];
+          img.onerror = () => {
+            if (isDebug) console.error(`Preload failed for ${product.name}: ${product.images[0]}`);
+          };
+        }, index * 100); // Delay of 100ms between each preload
+      });
+    }
+
+    // Fetch products from the API
+    async function fetchProducts() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/products`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const dbProducts = await response.json();
+
+        // Map database products to the expected frontend structure
+        products = dbProducts.map(product => {
+          const price = parseFloat(product.price) || 0;
+          const discount = parseFloat(product.discount) || 0;
+          const originalPrice = discount > 0 && price > 0 ? price / (1 - discount / 100) : price;
+          return {
+            id: product.id,
+            name: product.title || 'Unnamed Product',
+            price: price,
+            originalPrice: originalPrice,
+            images: [product.image_url, product.image_url_back || product.image_url, product.image_url],
+            rating: 4.0,
+            category: product.category || 'Others',
+            popularityScore: 80,
+            shortDescription: product.description || 'No description available.',
+            fit: product.fit || 'N/A',
+            bottom: product.bottom || 'N/A',
+            material: product.material || 'N/A',
+            hemCuff: product.hem_cuff || 'N/A',
+            colour: product.colour || 'N/A',
+            sizes: ["M (38 inches)", "L (40 inches)", "XL (42 inches)", "XXL (44 inches)"],
+            sku: "N/A"
+          };
+        });
+
+        filteredProducts = [...products];
+        preloadImages(products);
+        populateCategories();
+        applySorting();
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        document.getElementById('results-count').textContent = 'Failed to load products.';
+        document.getElementById('product-list').innerHTML = `<div class="col-12 text-center text-danger">Error: ${error.message}</div>`;
+      }
+    }
 
     // Function to clean invalid cart data
     function cleanCartData() {
@@ -1064,26 +816,24 @@
       productList.classList.add('fade');
       setTimeout(() => {
         productList.innerHTML = '';
-        console.log("Total products to display:", productArray.length);
         productArray.forEach(product => {
-          console.log("Rendering product:", product.name);
-          const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
-          
-          // Check if the product is the one with ID 1 to display three images
+          const discount = product.price > 0 && product.originalPrice > product.price
+            ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+            : 0;
           let imageSection;
           if (product.id === 1) {
             imageSection = `
               <div class="stacked-images">
                 <div>
-                  <img src="${product.images[0]}" alt="${product.name} Front" onload="console.log('Successfully loaded front image for ${product.name}: ${product.images[0]}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load front image for ${product.name}: ${product.images[0]}')">
+                  <img src="${product.images[0]}" alt="${product.name} Front">
                   <p>Front</p>
                 </div>
                 <div>
-                  <img src="${product.images[1]}" alt="${product.name} Side" onload="console.log('Successfully loaded side image for ${product.name}: ${product.images[1]}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load side image for ${product.name}: ${product.images[1]}')">
+                  <img src="${product.images[1]}" alt="${product.name} Side">
                   <p>Side</p>
                 </div>
                 <div>
-                  <img src="${product.images[2]}" alt="${product.name} Back" onload="console.log('Successfully loaded back image for ${product.name}: ${product.images[2]}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load back image for ${product.name}: ${product.images[2]}')">
+                  <img src="${product.images[2]}" alt="${product.name} Back">
                   <p>Back</p>
                 </div>
               </div>
@@ -1091,7 +841,7 @@
           } else {
             imageSection = `
               <div class="product-card-container">
-                <img src="${product.images[0]}" class="card-img-top" alt="${product.name}" onload="console.log('Successfully loaded image for ${product.name}: ${product.images[0]}')" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c'; console.error('Failed to load image for ${product.name}: ${product.images[0]}')">
+                <img class="card-img-top" alt="${product.name}">
                 <button class="btn btn-primary quick-view quick-view-overlay" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-id="${product.id}" data-name="${product.name}" data-price="${product.price}" data-original-price="${product.originalPrice}" data-images='${JSON.stringify(product.images)}' data-fit="${product.fit}" data-bottom="${product.bottom}" data-material="${product.material}" data-hem-cuff="${product.hemCuff}" data-colour="${product.colour}" data-sizes='${JSON.stringify(product.sizes)}' data-sku="${product.sku}" data-category="${product.category}" data-discount="${discount}">QUICK VIEW</button>
               </div>
             `;
@@ -1104,19 +854,41 @@
                 <div class="discount-badge">${discount}%</div>
                 <div class="card-body text-center">
                   <h5 class="card-title">${product.name}</h5>
+                  <p class="card-text">${product.shortDescription}</p>
                   <div class="star-rating mb-2">
                     ${generateStarRating(product.rating)}
                   </div>
                   <p class="card-text">
-                    <span class="text-decoration-line-through text-muted">₹${product.originalPrice.toFixed(2)}</span>
-                    <span class="text-danger fw-bold">₹${product.price.toFixed(2)}</span>
+                    <span class="text-decoration-line-through text-muted">₹${(product.originalPrice || 0).toFixed(2)}</span>
+                    <span class="text-danger fw-bold">₹${(product.price || 0).toFixed(2)}</span>
                   </p>
+                  <p class="card-text text-muted">Category: ${product.category}</p>
                 </div>
               </div>
             </div>
           `;
           productList.innerHTML += productCard;
+
+          // Load images with retry mechanism
+          if (product.id === 1) {
+            const imgElements = productList.lastElementChild.querySelectorAll('.stacked-images img');
+            imgElements[0].onerror = () => loadImageWithRetry(imgElements[0], product.images[0], `${product.name} (Front)`);
+            imgElements[1].onerror = () => loadImageWithRetry(imgElements[1], product.images[1], `${product.name} (Side)`);
+            imgElements[2].onerror = () => loadImageWithRetry(imgElements[2], product.images[2], `${product.name} (Back)`);
+            if (isDebug) {
+              imgElements[0].onload = () => console.log(`Successfully loaded front image for ${product.name}: ${product.images[0]}`);
+              imgElements[1].onload = () => console.log(`Successfully loaded side image for ${product.name}: ${product.images[1]}`);
+              imgElements[2].onload = () => console.log(`Successfully loaded back image for ${product.name}: ${product.images[2]}`);
+            }
+            imgElements[0].src = product.images[0];
+            imgElements[1].src = product.images[1];
+            imgElements[2].src = product.images[2];
+          } else {
+            const imgElement = productList.lastElementChild.querySelector('.card-img-top');
+            loadImageWithRetry(imgElement, product.images[0], product.name);
+          }
         });
+
         document.getElementById('results-count').textContent = `Showing all ${productArray.length} results`;
         productList.classList.remove('fade');
 
@@ -1154,10 +926,15 @@
                 <p class="text-center mb-2">Side</p>
               </div>
             `;
+            const modalImages = imagesContainer.querySelectorAll('img');
+            modalImages.forEach((img, index) => {
+              img.onerror = () => loadImageWithRetry(img, images[index], `${name} (Quick View)`);
+              if (isDebug) img.onload = () => console.log(`Successfully loaded Quick View image for ${name}: ${images[index]}`);
+            });
 
             document.getElementById('quick-view-title').textContent = name;
-            document.getElementById('quick-view-original-price').textContent = `₹${originalPrice.toFixed(2)} `;
-            document.getElementById('quick-view-discounted-price').textContent = `₹${price.toFixed(2)}`;
+            document.getElementById('quick-view-original-price').textContent = `₹${(originalPrice || 0).toFixed(2)} `;
+            document.getElementById('quick-view-discounted-price').textContent = `₹${(price || 0).toFixed(2)}`;
             document.getElementById('quick-view-discount').textContent = `-${discount}%`;
             document.getElementById('quick-view-fit').textContent = fit;
             document.getElementById('quick-view-bottom').textContent = bottom;
@@ -1175,7 +952,7 @@
             // Reset the "Add to Cart" button text and behavior
             const addToCartButton = document.getElementById('quick-view-add-to-cart');
             addToCartButton.textContent = "ADD TO CART";
-            addToCartButton.onclick = null; // Remove any existing event listeners
+            addToCartButton.onclick = null;
 
             // Populate sizes
             const sizesContainer = document.getElementById('quick-view-sizes');
@@ -1204,7 +981,7 @@
               quantityInput.value = qty + 1;
             });
 
-            // Add event listener to "Add to Cart" button with the new flow
+            // Add event listener to "Add to Cart" button
             addToCartButton.addEventListener('click', function addToCartHandler() {
               const id = parseInt(addToCartButton.dataset.id);
               const product = products.find(p => p.id === id);
@@ -1223,11 +1000,10 @@
               updateCartTotal();
               updateCartSidebar();
 
-              // Change button text to "Go to Cart" and update its behavior
               addToCartButton.textContent = "GO TO CART";
-              addToCartButton.removeEventListener('click', addToCartHandler); // Remove the "Add to Cart" handler
+              addToCartButton.removeEventListener('click', addToCartHandler);
               addToCartButton.addEventListener('click', () => {
-                window.location.href = '/cart'; // Redirect to cart page
+                window.location.href = '/cart';
               });
             });
           });
@@ -1266,10 +1042,10 @@
 
     // Update cart sidebar content
     function updateCartSidebar() {
-      const cart = cleanCartData(); // Ensure cart data is clean
+      const cart = cleanCartData();
       const cartItemsContainer = document.getElementById('cart-sidebar-items');
       const cartTotalElement = document.getElementById('cart-sidebar-total');
-      cartItemsContainer.innerHTML = ''; // Clear the container
+      cartItemsContainer.innerHTML = '';
 
       if (!cart || cart.length === 0) {
         cartItemsContainer.innerHTML = '<p class="text-center">Your cart is empty.</p>';
@@ -1278,15 +1054,14 @@
         return;
       }
 
-      // Render each cart item with remove button
       cart.forEach(item => {
         const price = Number(item.price) || 0;
         const quantity = Number(item.quantity) || 1;
-        const image = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : 'https://images.unsplash.com/photo-1556906781-9a412961c28c'; // Fallback image
+        const image = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : 'https://images.unsplash.com/photo-1556906781-9a412961c28c';
         const cartItem = `
           <div class="cart-item">
             <button class="remove-cart-item" data-id="${item.id}" data-size="${item.size}">❌</button>
-            <img src="${image}" alt="${item.name || 'Product'}" class="cart-item-img" onerror="this.src='https://images.unsplash.com/photo-1556906781-9a412961c28c';">
+            <img alt="${item.name || 'Product'}" class="cart-item-img">
             <div class="cart-item-details">
               <h6>${item.name || 'Unknown Product'}</h6>
               <p>Size: ${item.size || 'N/A'}</p>
@@ -1295,9 +1070,12 @@
           </div>
         `;
         cartItemsContainer.innerHTML += cartItem;
+
+        const imgElement = cartItemsContainer.lastElementChild.querySelector('.cart-item-img');
+        loadImageWithRetry(imgElement, image, item.name);
+        if (isDebug) imgElement.onload = () => console.log(`Successfully loaded cart image for ${item.name}: ${image}`);
       });
 
-      // Add event listeners to remove buttons
       document.querySelectorAll('.remove-cart-item').forEach(button => {
         button.addEventListener('click', () => {
           const id = parseInt(button.dataset.id);
@@ -1306,7 +1084,6 @@
         });
       });
 
-      // Calculate and update total
       const total = cart.reduce((sum, item) => {
         const price = Number(item.price) || 0;
         const quantity = Number(item.quantity) || 1;
@@ -1314,7 +1091,6 @@
       }, 0);
       cartTotalElement.textContent = total.toFixed(2);
 
-      // Check if the content is scrollable for the gradient indicator
       if (cartItemsContainer.scrollHeight > cartItemsContainer.clientHeight) {
         cartItemsContainer.classList.add('scrollable');
       } else {
@@ -1325,10 +1101,7 @@
     // Populate categories dynamically
     function populateCategories() {
       const categoryList = document.getElementById('category-list');
-      const categories = [
-        "Clothing", "Hoodies & Sweatshirts", "Tracksuits", "Jacket", "Fleece Tracksuit",
-        "Polo T Shirt", "Women Jacket", "Women Leggings", "Mens Shorts", "Trackpants", "Others"
-      ];
+      const categories = [...new Set(products.map(product => product.category))];
       categories.forEach(category => {
         const count = products.filter(product => product.category === category).length;
         const li = document.createElement('li');
@@ -1336,12 +1109,12 @@
         categoryList.appendChild(li);
       });
 
-      // Add event listeners to category links
       categoryList.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
-          e.byClassList.preventDefault();
+          e.preventDefault();
           selectedCategory = link.dataset.category;
-          applyFilters();
+          updateFilterButtonState();
+          debouncedApplyFilters();
         });
       });
     }
@@ -1353,6 +1126,10 @@
     const maxPriceValue = document.getElementById('max-price-value');
     const filterBtn = document.querySelector('.filter-btn');
 
+    // Store initial values
+    initialMinPrice = parseInt(minPriceRange.value);
+    initialMaxPrice = parseInt(maxPriceRange.value);
+
     minPriceRange.addEventListener('input', () => {
       let minVal = parseInt(minPriceRange.value);
       let maxVal = parseInt(maxPriceRange.value);
@@ -1361,6 +1138,7 @@
         minVal = maxVal - 100;
       }
       minPriceValue.textContent = minVal;
+      updateFilterButtonState();
     });
 
     maxPriceRange.addEventListener('input', () => {
@@ -1371,7 +1149,31 @@
         maxVal = minVal + 100;
       }
       maxPriceValue.textContent = maxVal;
+      updateFilterButtonState();
     });
+
+    // Function to update filter button state
+    function updateFilterButtonState() {
+      const currentMinPrice = parseInt(minPriceRange.value);
+      const currentMaxPrice = parseInt(maxPriceRange.value);
+      const hasPriceFilter = currentMinPrice !== initialMinPrice || currentMaxPrice !== initialMaxPrice;
+      const hasCategoryFilter = selectedCategory !== null;
+
+      if (hasPriceFilter || hasCategoryFilter) {
+        filterBtn.classList.add('active');
+      } else {
+        filterBtn.classList.remove('active');
+      }
+    }
+
+    // Debounce function to limit re-renders
+    function debounce(func, wait) {
+      let timeout;
+      return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
 
     // Apply filters
     function applyFilters() {
@@ -1385,11 +1187,15 @@
       applySorting();
     }
 
-    filterBtn.addEventListener('click', applyFilters);
+    const debouncedApplyFilters = debounce(applyFilters, 300);
+    filterBtn.addEventListener('click', () => {
+      debouncedApplyFilters();
+      updateFilterButtonState();
+    });
 
     // Sorting functionality
     const sortOptions = document.getElementById('sort-options');
-    sortOptions.value = 'popularity'; // Set default sorting
+    sortOptions.value = 'popularity';
 
     function applySorting() {
       const sortValue = sortOptions.value;
@@ -1408,7 +1214,8 @@
       displayProducts(sortedProducts);
     }
 
-    sortOptions.addEventListener('change', applySorting);
+    const debouncedApplySorting = debounce(applySorting, 300);
+    sortOptions.addEventListener('change', debouncedApplySorting);
 
     // Sidebar toggle for mobile
     const sidebarToggle = document.querySelector('.sidebar-toggle');
@@ -1419,8 +1226,7 @@
 
     // Load products, categories, and cart total on page load
     document.addEventListener('DOMContentLoaded', () => {
-      populateCategories();
-      applySorting();
+      fetchProducts();
       cleanCartData();
       updateCartTotal();
       updateCartSidebar();
