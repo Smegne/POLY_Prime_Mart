@@ -300,58 +300,128 @@
     </div>
   </div>
 
-  <!-- Add Product Modal -->
-  <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="add-product-form">
-            <div class="mb-3">
-              <label for="product-title" class="form-label">Title</label>
-              <input type="text" class="form-control" id="product-title" required>
-            </div>
-            <div class="mb-3">
-              <label for="product-description" class="form-label">Description</label>
-              <textarea class="form-control" id="product-description" rows="3" required></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="product-image" class="form-label">Image URL</label>
-              <input type="text" class="form-control" id="product-image" required>
-            </div>
-            <div class="mb-3">
-              <label for="product-price" class="form-label">Price (₹)</label>
-              <input type="number" class="form-control" id="product-price" required>
-            </div>
-            <div class="mb-3">
-              <label for="product-discount" class="form-label">Discount (%)</label>
-              <input type="number" class="form-control" id="product-discount" value="0">
-            </div>
-            <div class="mb-3">
-              <label for="product-stock" class="form-label">Stock Status</label>
-              <select class="form-control" id="product-stock" required>
-                <option value="In Stock">In Stock</option>
-                <option value="Out of Stock">Out of Stock</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="product-category" class="form-label">Category</label>
-              <select class="form-control" id="product-category" required>
-                <option value="electronics">Electronics</option>
-                <option value="clothing">Clothing</option>
-                <option value="home decor">Home Decor</option>
-                <option value="outdoor">Outdoor</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Add Product</button>
-          </form>
-        </div>
+<!-- Add Product Modal -->
+<!-- Add Product Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-product-form">
+          <div class="mb-3">
+            <label for="product-title" class="form-label">Title <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="product-title" name="title" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="product-description" class="form-label">Description <span class="text-danger">*</span></label>
+            <textarea class="form-control" id="product-description" name="description" rows="3" required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="product-image" class="form-label">Image URL <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="product-image" name="image_url" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="product-price" class="form-label">Price (₹) <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="product-price" name="price" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="product-discount" class="form-label">Discount (%)</label>
+            <input type="number" class="form-control" id="product-discount" name="discount" value="0">
+          </div>
+
+          <div class="mb-3">
+            <label for="product-stock" class="form-label">Stock Quantity <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="product-stock" name="stock" value="0" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="product-category" class="form-label">Category <span class="text-danger">*</span></label>
+            <select class="form-control" id="product-category" name="category" required>
+              <option value="electronics">Electronics</option>
+              <option value="clothing">Clothing</option>
+              <option value="home decor">Home Decor</option>
+              <option value="outdoor">Outdoor</option>
+            </select>
+          </div>
+
+          <!-- New set_in field -->
+          <div class="mb-3">
+            <label for="product-set-in" class="form-label">Set In <span class="text-danger">*</span></label>
+            <select class="form-control" id="product-set-in" name="set_in" required>
+              <option value="latest">Latest</option>
+              <option value="bestselling">Bestselling</option>
+            </select>
+          </div>
+
+          <!-- New show_in field -->
+          <div class="mb-3">
+            <label for="product-show-in" class="form-label">Show In <span class="text-danger">*</span></label>
+            <select class="form-control" id="product-show-in" name="show_in" required>
+              <option value="home page">Home Page</option>
+              <option value="shop page">Shop Page</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Add Product</button>
+        </form>
       </div>
     </div>
   </div>
+</div>
+
+<!-- JavaScript to Handle Form Submission -->
+<script>
+document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+  const productData = {
+    title: formData.get('title'),
+    description: formData.get('description'),
+    image_url: formData.get('image_url'),
+    price: parseFloat(formData.get('price')),
+    discount: parseInt(formData.get('discount')) || 0,
+    stock: parseInt(formData.get('stock')),
+    category: formData.get('category'),
+    set_in: formData.get('set_in'),
+    show_in: formData.get('show_in')
+  };
+
+  try {
+    const response = await fetch('/api/products', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(productData)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to add product');
+    }
+
+    // Close the modal and refresh the product list
+    const modal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
+    modal.hide();
+
+    // Refresh the product list (you may already have a function to do this)
+    location.reload(); // Simple way to refresh the page; replace with your refresh logic if needed
+  } catch (error) {
+    console.error('Error adding product:', error);
+    alert('Error adding product: ' + error.message);
+  }
+});
+</script>
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>

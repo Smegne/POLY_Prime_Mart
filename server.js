@@ -63,6 +63,8 @@ db.query(`
     discount INT DEFAULT 0,
     stock INT NOT NULL,
     category VARCHAR(100) NOT NULL,
+    set_in ENUM('latest', 'bestselling') NOT NULL DEFAULT 'latest',
+    show_in ENUM('home page', 'shop page') NOT NULL DEFAULT 'shop page',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )
 `, err => {
@@ -148,7 +150,14 @@ const isAuthenticated = (req, res, next) => {
 
 // Routes for Frontend Pages
 app.get('/', (req, res) => {
-  res.render('index', { session: req.session });
+  // Fetch products for the homepage (show_in = 'home page')
+  db.query("SELECT * FROM products WHERE show_in = 'home page' ORDER BY id DESC", (err, products) => {
+    if (err) {
+      console.error('Error fetching products for homepage:', err);
+      return res.status(500).send('Server error');
+    }
+    res.render('index', { session: req.session, products });
+  });
 });
 
 app.get('/products', (req, res) => {
@@ -192,7 +201,14 @@ app.get('/terms', (req, res) => {
 });
 
 app.get('/shop', (req, res) => {
-  res.render('shop', { session: req.session });
+  // Fetch products for the shop page (show_in = 'shop page')
+  db.query("SELECT * FROM products WHERE show_in = 'shop page' ORDER BY id DESC", (err, products) => {
+    if (err) {
+      console.error('Error fetching products for shop page:', err);
+      return res.status(500).send('Server error');
+    }
+    res.render('shop', { session: req.session, products });
+  });
 });
 
 app.get('/my-account', isAuthenticated, (req, res) => {
@@ -284,10 +300,23 @@ app.get('/api/products', (req, res) => {
 });
 
 app.post('/api/products', (req, res) => {
-  const { title, description, image_url, price, discount, stock, category } = req.body;
+  const { title, description, image_url, price, discount, stock, category, set_in, show_in } = req.body;
+
+  // Validate required fields
+  if (!title || !description || !image_url || !price || !stock || !category || !set_in || !show_in) {
+    return res.status(400).json({ error: 'All required fields must be provided' });
+  }
+
+  // Validate set_in and show_in values
+  const validSetIn = ['latest', 'bestselling'];
+  const validShowIn = ['home page', 'shop page'];
+  if (!validSetIn.includes(set_in) || !validShowIn.includes(show_in)) {
+    return res.status(400).json({ error: 'Invalid set_in or show_in value' });
+  }
+
   db.query(
-    "INSERT INTO products (title, description, image_url, price, discount, stock, category) VALUES (?, ?, ?, ?, ?, ?, ?)",
-    [title, description, image_url, price, discount, stock, category],
+    "INSERT INTO products (title, description, image_url, price, discount, stock, category, set_in, show_in) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    [title, description, image_url, price, discount || 0, stock, category, set_in, show_in],
     (err, result) => {
       if (err) return res.status(500).json({ error: err.message });
       res.json({ id: result.insertId });
