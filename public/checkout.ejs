@@ -188,7 +188,7 @@
         <ul class="navbar-nav ms-auto">
           <% if (session.user) { %>
             <li class="nav-item">
-              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ETB <span id="cart-total-nav">0.00</span></a>
             </li>
             <li class="nav-item">
               <span class="nav-link">My Account</span>
@@ -210,7 +210,7 @@
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ETB <span id="cart-total-nav">0.00</span></a>
             </li>
             <li class="nav-item">
               <a class="nav-link btn btn-outline-primary" href="#" data-bs-toggle="modal" data-bs-target="#authModal" data-form="login">LOGIN</a>
@@ -276,7 +276,8 @@
               <!-- Shipping Options -->
               <div class="shipping-options mb-3">
                 <h5>Shipping Options</h5>
-                <p>Enter a shipping address to view shipping options.</p>
+                <p>Enter a shipping address to view shippingconsentType="text/html">
+options.</p>
               </div>
 
               <!-- Payment Options -->
@@ -312,9 +313,9 @@
             <h5>Order Summary</h5>
             <div id="order-items"></div>
             <div class="order-totals">
-              <p>Subtotal <span id="order-subtotal">₹0.00</span></p>
+              <p>Subtotal <span id="order-subtotal">ETB 0.00</span></p>
               <p>Delivery <span id="order-delivery">Enter address to calculate</span></p>
-              <p class="total">Total <span id="order-total">₹0.00</span></p>
+              <p class="total">Total <span id="order-total">ETB 0.00</span></p>
             </div>
           </div>
         </div>
@@ -398,7 +399,7 @@
             <div class="order-item-details">
               <p>${item.name}</p>
               <p>Size: ${item.size}</p>
-              <p>₹${subtotal.toFixed(2)}</p>
+              <p>ETB ${subtotal.toFixed(2)}</p>
             </div>
           </div>
         `;
@@ -411,8 +412,8 @@
         const quantity = Number(item.quantity) || 1;
         return sum + price * quantity;
       }, 0);
-      document.getElementById('order-subtotal').textContent = `₹${subtotal.toFixed(2)}`;
-      document.getElementById('order-total').textContent = `₹${subtotal.toFixed(2)}`; // Assuming delivery is free or not calculated
+      document.getElementById('order-subtotal').textContent = `ETB ${subtotal.toFixed(2)}`;
+      document.getElementById('order-total').textContent = `ETB ${subtotal.toFixed(2)}`; // Assuming delivery is free or not calculated
       document.getElementById('cart-total-nav').textContent = subtotal.toFixed(2);
     }
 
