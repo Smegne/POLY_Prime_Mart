@@ -290,7 +290,7 @@
     .cart-sidebar-footer {
       margin-top: auto;
       padding-top: 15px;
-      border-top: 1 #eee;
+      border-top: 1px solid #eee;
     }
 
     .cart-sidebar-footer p {
@@ -875,9 +875,11 @@
             <li class="nav-item">
               <a class="nav-link" href="/my-account">My Account</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin-dashboard">Admin Dashboard</a>
-            </li>
+            <% if (session.user.role === 'admin') { %>
+              <li class="nav-item">
+                <a class="nav-link" href="/admin-dashboard">Admin Dashboard</a>
+              </li>
+            <% } %>
             <li class="nav-item">
               <a class="nav-link btn btn-outline-danger" href="/logout">LOGOUT</a>
             </li>
@@ -1570,4 +1572,3 @@
   </script>
 </body>
 </html>
-</x

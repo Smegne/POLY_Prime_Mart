@@ -45,6 +45,7 @@ db.query(`
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    role ENUM('user', 'admin') NOT NULL DEFAULT 'user',
     status ENUM('active', 'inactive') DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )
@@ -56,7 +57,7 @@ db.query(`
 db.query(`
   CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL  NOT NULL,
+    title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     image_url VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
@@ -148,6 +149,14 @@ const isAuthenticated = (req, res, next) => {
   res.redirect('/login');
 };
 
+// Middleware to check if user is admin
+const isAdmin = (req, res, next) => {
+  if (req.session.user && req.session.user.role === 'admin') {
+    return next();
+  }
+  res.status(403).send('Access denied: Admin privileges required');
+};
+
 // Routes for Frontend Pages
 app.get('/', (req, res) => {
   // Fetch products for the homepage (show_in = 'home page')
@@ -220,7 +229,7 @@ app.get('/order-complete', (req, res) => {
 });
 
 // Admin Dashboard Route (Protected)
-app.get('/admin-dashboard', isAuthenticated, (req, res) => {
+app.get('/admin-dashboard', isAuthenticated, isAdmin, (req, res) => {
   db.query("SELECT * FROM products ORDER BY id DESC", (err, products) => {
     if (err) {
       console.error('Error fetching products for admin dashboard:', err);
@@ -236,8 +245,8 @@ app.post('/register', async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     db.query(
-      'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-      [username, email, hashedPassword],
+      'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
+      [username, email, hashedPassword, 'user'],
       (err) => {
         if (err) {
           if (err.code === 'ER_DUP_ENTRY') {
@@ -286,7 +295,8 @@ app.post('/login', async (req, res) => {
       // Set session
       req.session.user = {
         id: user.id,
-        username: user.username
+        username: user.username,
+        role: user.role // Include role in session
       };
 
       // Return success response
