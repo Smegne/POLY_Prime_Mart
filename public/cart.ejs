@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -225,7 +226,7 @@
         <ul class="navbar-nav ms-auto">
           <% if (session.user) { %>
             <li class="nav-item">
-              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | Birr<span id="cart-total-nav">0.00</span></a>
             </li>
             <li class="nav-item">
               <span class="nav-link">My Account</span>
@@ -247,7 +248,7 @@
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | ₹<span id="cart-total-nav">0.00</span></a>
+              <a class="nav-link cart-trigger" href="#" id="cart-trigger">CART | Birr<span id="cart-total-nav">0.00</span></a>
             </li>
             <li class="nav-item">
               <a class="nav-link btn btn-outline-primary" href="#" data-bs-toggle="modal" data-bs-target="#authModal" data-form="login">LOGIN</a>
@@ -291,9 +292,9 @@
         <div class="col-md-4">
           <div class="cart-totals">
             <h5>CART TOTALS</h5>
-            <p>Subtotal <span id="cart-subtotal">₹0.00</span></p>
+            <p>Subtotal <span id="cart-subtotal">Birr 0.00</span></p>
             <p>Shipping <span id="cart-shipping">Enter your address to view shipping options.</span></p>
-            <p class="total">Total <span id="cart-total">₹0.00</span></p>
+            <p class="total">Total <span id="cart-total">Birr0.00</span></p>
             <a href="/checkout" class="btn proceed-checkout w-100">PROCEED TO CHECKOUT</a>
           </div>
           <div class="coupon-section">
@@ -339,6 +340,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/scripts.js"></script>
   <script>
+    const isDebug = true; // Set to false in production
+
     // Search bar toggle functionality
     document.querySelector('.search-icon').addEventListener('click', function() {
       const searchBar = document.querySelector('.search-bar');
@@ -355,6 +358,7 @@
         return item.id && Number(item.price) > 0 && Number(item.quantity) > 0 && item.name && item.images && item.size;
       });
       localStorage.setItem('cart', JSON.stringify(cart));
+      if (isDebug) console.log('Cleaned cart data:', cart);
       return cart;
     }
 
@@ -363,6 +367,7 @@
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       cart = cart.filter(item => !(item.id === id && item.size === size));
       localStorage.setItem('cart', JSON.stringify(cart));
+      if (isDebug) console.log(`Removed item: id=${id}, size=${size}, Updated cart:`, cart);
       updateCartTable();
       updateCartTotal();
     }
@@ -377,6 +382,7 @@
         return item;
       });
       localStorage.setItem('cart', JSON.stringify(cart));
+      if (isDebug) console.log(`Updated quantity: id=${id}, size=${size}, change=${change}, Updated cart:`, cart);
       updateCartTable();
       updateCartTotal();
     }
@@ -389,6 +395,7 @@
 
       if (!cart || cart.length === 0) {
         cartItemsContainer.innerHTML = '<tr><td colspan="4" class="text-center">Your cart is empty.</td></tr>';
+        if (isDebug) console.log('Cart is empty');
         return;
       }
 
@@ -409,7 +416,7 @@
                 </div>
               </div>
             </td>
-            <td>₹${price.toFixed(2)}</td>
+            <td>Birr${price.toFixed(2)}</td>
             <td>
               <div class="quantity-control">
                 <button onclick="updateQuantity(${item.id}, '${item.size}', -1)">-</button>
@@ -417,10 +424,11 @@
                 <button onclick="updateQuantity(${item.id}, '${item.size}', 1)">+</button>
               </div>
             </td>
-            <td>₹${subtotal.toFixed(2)}</td>
+            <td>Birr${subtotal.toFixed(2)}</td>
           </tr>
         `;
         cartItemsContainer.innerHTML += cartItem;
+        if (isDebug) console.log(`Rendered cart item: id=${item.id}, name=${item.name}, price=${price}, quantity=${quantity}`);
       });
 
       // Add event listeners to remove buttons
@@ -441,9 +449,10 @@
         const quantity = Number(item.quantity) || 1;
         return sum + price * quantity;
       }, 0);
-      document.getElementById('cart-subtotal').textContent = `₹${subtotal.toFixed(2)}`;
-      document.getElementById('cart-total').textContent = `₹${subtotal.toFixed(2)}`; // Assuming shipping is free or not calculated yet
+      document.getElementById('cart-subtotal').textContent = `Birr${subtotal.toFixed(2)}`;
+      document.getElementById('cart-total').textContent = `Birr${subtotal.toFixed(2)}`; // Assuming shipping is free or not calculated yet
       document.getElementById('cart-total-nav').textContent = subtotal.toFixed(2);
+      if (isDebug) console.log(`Updated cart totals: subtotal=${subtotal}`);
     }
 
     // Function to handle "Update Cart" button
@@ -462,3 +471,4 @@
   </script>
 </body>
 </html>
+```

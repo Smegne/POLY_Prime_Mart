@@ -56,7 +56,7 @@ db.query(`
 db.query(`
   CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL  NOT NULL,
     description TEXT NOT NULL,
     image_url VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
@@ -256,27 +256,46 @@ app.post('/register', async (req, res) => {
 });
 
 // Login
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
-    if (err) {
-      console.error('Error fetching user:', err);
-      return res.status(500).send('Server error');
+
+  try {
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
     }
-    if (results.length === 0) {
-      return res.status(401).send('Invalid email or password');
-    }
-    const user = results[0];
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      return res.status(401).send('Invalid email or password');
-    }
-    req.session.user = {
-      id: user.id,
-      username: user.username
-    };
-    res.redirect('/my-account');
-  });
+
+    // Query user
+    db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
+      if (err) {
+        console.error('Error fetching user:', err);
+        return res.status(500).json({ error: 'Server error' });
+      }
+
+      if (results.length === 0) {
+        return res.status(401).json({ error: 'Invalid email or password' });
+      }
+
+      const user = results[0];
+      const match = await bcrypt.compare(password, user.password);
+
+      if (!match) {
+        return res.status(401).json({ error: 'Invalid email or password' });
+      }
+
+      // Set session
+      req.session.user = {
+        id: user.id,
+        username: user.username
+      };
+
+      // Return success response
+      res.status(200).json({ message: 'Login successful' });
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 // Logout

@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -440,7 +441,7 @@
               <a class="nav-link cart-trigger" href="#" id="cart-trigger">
                 <span>CART</span>
                 <span class="cart-badge" id="cart-item-count">0</span>
-                <span>| ₹</span><span id="cart-total-nav">0.00</span>
+                <span>| Birr</span><span id="cart-total-nav">0.00</span>
                 <span class="cart-icon">🛒</span>
               </a>
             </li>
@@ -461,7 +462,7 @@
               <a class="nav-link cart-trigger" href="#" id="cart-trigger">
                 <span>CART</span>
                 <span class="cart-badge" id="cart-item-count">0</span>
-                <span>| ₹</span><span id="cart-total-nav">0.00</span>
+                <span>| Birr</span><span id="cart-total-nav">0.00</span>
                 <span class="cart-icon">🛒</span>
               </a>
             </li>
@@ -483,7 +484,7 @@
     </div>
     <div id="cart-sidebar-items"></div>
     <div class="cart-sidebar-footer">
-      <p>Total: ₹<span id="cart-sidebar-total">0.00</span></p>
+      <p>Total: Birr<span id="cart-sidebar-total">0.00</span></p>
       <a href="/cart" class="btn btn-primary w-100">View cart</a>
     </div>
   </div>
@@ -613,7 +614,7 @@
               <input type="range" class="price-range" id="min-price" min="0" max="10000" value="0" step="100">
               <input type="range" class="price-range" id="max-price" min="0" max="10000" value="10000" step="100">
             </div>
-            <p>Price: ₹<span id="min-price-value">0</span> – ₹<span id="max-price-value">10000</span></p>
+            <p>Price: Birr<span id="min-price-value">0</span> – Birr<span id="max-price-value">10000</span></p>
             <button class="filter-btn">FILTER</button>
           </div>
         </div>
@@ -810,6 +811,35 @@
       updateCartSidebar();
     }
 
+    // Function to generate star rating
+    function generateStarRating(rating) {
+      let stars = '';
+      for (let i = 0; i < 5; i++) {
+        if (i < Math.floor(rating)) {
+          stars += '<i class="bi bi-star-fill"></i>';
+        } else {
+          stars += '<i class="bi bi-star"></i>';
+        }
+      }
+      return stars;
+    }
+
+    // Update cart total and item count in navbar
+    function updateCartTotal() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const total = cart.reduce((sum, item) => {
+        const price = Number(item.price) || 0;
+        const quantity = Number(item.quantity) || 1;
+        return sum + price * quantity;
+      }, 0);
+      const itemCount = cart.reduce((sum, item) => {
+        const quantity = Number(item.quantity) || 1;
+        return sum + quantity;
+      }, 0);
+      document.getElementById('cart-total-nav').textContent = isNaN(total) ? '0.00' : total.toFixed(2);
+      document.getElementById('cart-item-count').textContent = itemCount;
+    }
+
     // Function to display products with animation
     function displayProducts(productArray) {
       const productList = document.getElementById('product-list');
@@ -859,8 +889,8 @@
                     ${generateStarRating(product.rating)}
                   </div>
                   <p class="card-text">
-                    <span class="text-decoration-line-through text-muted">₹${(product.originalPrice || 0).toFixed(2)}</span>
-                    <span class="text-danger fw-bold">₹${(product.price || 0).toFixed(2)}</span>
+                    <span class="text-decoration-line-through text-muted">Birr${(product.originalPrice || 0).toFixed(2)}</span>
+                    <span class="text-danger fw-bold">Birr${(product.price || 0).toFixed(2)}</span>
                   </p>
                   <p class="card-text text-muted">Category: ${product.category}</p>
                 </div>
@@ -933,8 +963,8 @@
             });
 
             document.getElementById('quick-view-title').textContent = name;
-            document.getElementById('quick-view-original-price').textContent = `₹${(originalPrice || 0).toFixed(2)} `;
-            document.getElementById('quick-view-discounted-price').textContent = `₹${(price || 0).toFixed(2)}`;
+            document.getElementById('quick-view-original-price').textContent = `Birr${(originalPrice || 0).toFixed(2)} `;
+            document.getElementById('quick-view-discounted-price').textContent = `Birr${(price || 0).toFixed(2)}`;
             document.getElementById('quick-view-discount').textContent = `-${discount}%`;
             document.getElementById('quick-view-fit').textContent = fit;
             document.getElementById('quick-view-bottom').textContent = bottom;
@@ -993,7 +1023,7 @@
               if (existingItem) {
                 existingItem.quantity = (existingItem.quantity || 1) + quantity;
               } else {
-                cart.push({ ...product, quantity: quantity, size: selectedSize });
+                cart.push({ ...product, quantity, size: selectedSize });
               }
 
               localStorage.setItem('cart', JSON.stringify(cart));
@@ -1009,35 +1039,6 @@
           });
         });
       }, 300);
-    }
-
-    // Function to generate star rating
-    function generateStarRating(rating) {
-      let stars = '';
-      for (let i = 0; i < 5; i++) {
-        if (i < Math.floor(rating)) {
-          stars += '<i class="bi bi-star-fill"></i>';
-        } else {
-          stars += '<i class="bi bi-star"></i>';
-        }
-      }
-      return stars;
-    }
-
-    // Update cart total and item count in navbar
-    function updateCartTotal() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const total = cart.reduce((sum, item) => {
-        const price = Number(item.price) || 0;
-        const quantity = Number(item.quantity) || 1;
-        return sum + price * quantity;
-      }, 0);
-      const itemCount = cart.reduce((sum, item) => {
-        const quantity = Number(item.quantity) || 1;
-        return sum + quantity;
-      }, 0);
-      document.getElementById('cart-total-nav').textContent = isNaN(total) ? '0.00' : total.toFixed(2);
-      document.getElementById('cart-item-count').textContent = itemCount;
     }
 
     // Update cart sidebar content
@@ -1065,7 +1066,7 @@
             <div class="cart-item-details">
               <h6>${item.name || 'Unknown Product'}</h6>
               <p>Size: ${item.size || 'N/A'}</p>
-              <p class="text-danger">₹${price.toFixed(2)} x ${quantity}</p>
+              <p class="text-danger">Birr${price.toFixed(2)} x ${quantity}</p>
             </div>
           </div>
         `;
@@ -1234,3 +1235,4 @@
   </script>
 </body>
 </html>
+```
