@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,397 +8,95 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="/styles.css">
   <style>
-    /* Ensure the product card container is positioned relatively */
-    .product-card-container {
+    /* Search Bar Styling */
+    .search-container {
       position: relative;
-    }
-
-    /* Style for the Quick View button overlay */
-    .quick-view-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    /* Show Quick View button on hover over the image */
-    .product-card-container:hover .quick-view-overlay {
-      opacity: 1;
-    }
-
-    /* Dim the image on hover to make the button stand out */
-    .product-card-container:hover .card-img-top {
-      opacity: 0.8;
-    }
-
-    /* Sidebar styles */
-    .sidebar {
-      border-right: 1px solid #ddd;
-      padding-right: 20px;
-      transition: transform 0.3s ease;
-    }
-
-    .sidebar h5 {
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #6f42c1;
-      margin-bottom: 15px;
-    }
-
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .sidebar ul li {
-      margin-bottom: 10px;
-    }
-
-    .sidebar ul li a {
-      text-decoration: none;
-      color: #333;
-    }
-
-    .sidebar ul li a:hover {
-      color: #6f42c1;
-    }
-
-    /* Price range filter styles */
-    .price-filter {
-      margin-top: 30px;
-    }
-
-    .price-filter h5 {
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #6f42c1;
-    }
-
-    .price-range-container {
       display: flex;
-      gap: 10px;
-      margin: 10px 0;
-    }
-
-    .price-range {
-      width: 100%;
-    }
-
-    .price-range::-webkit-slider-thumb {
-      background: #6f42c1;
-    }
-
-    .price-range::-moz-range-thumb {
-      background: #6f42c1;
-    }
-
-    .filter-btn {
-      background-color: #6c757d;
-      color: white;
-      border: none;
-      padding: 5px 15px;
-      font-size: 0.9rem;
-      transition: background-color 0.3s ease;
-    }
-
-    .filter-btn:hover {
-      background-color: #5a6268;
-    }
-
-    /* Active state for the filter button */
-    .filter-btn.active {
-      background-color: #6f42c1; /* Purple color to indicate active filters */
-      color: white;
-    }
-
-    /* Sorting dropdown */
-    .sort-section {
-      display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
     }
-
-    .sort-section select {
-      width: 200px;
-      padding: 5px;
-      border-radius: 5px;
-      border: 1px solid #ddd;
-    }
-
-    /* Animation for product list update */
-    #product-list {
-      transition: opacity 0.3s ease;
-    }
-
-    #product-list.fade {
-      opacity: 0;
-    }
-
-    /* Sidebar toggle for mobile */
-    .sidebar-toggle {
-      display: none;
-      background-color: #6f42c1;
-      color: white;
-      border: none;
-      padding: 10px;
-      margin-bottom: 15px;
-    }
-
-    /* Cart Sidebar Styles */
-    #cart-sidebar {
-      position: fixed;
-      top: 0;
-      right: -400px;
-      width: 400px;
-      height: 100%;
-      background-color: #fff;
-      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-      transition: right 0.3s ease;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-    }
-
-    #cart-sidebar.active {
-      right: 0;
-    }
-
-    .cart-sidebar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .cart-sidebar-header h2 {
-      font-size: 1.5rem;
-      font-weight: bold;
+ 
+    .search-icon {
+      font-size: 1.2rem;
       color: #333;
-    }
-
-    .close-cart-sidebar {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
       cursor: pointer;
-      color: #333;
-    }
-
-    .cart-item {
-      border-bottom: 1px solid #eee;
-      padding-bottom: 8px;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      min-height: 80px;
-    }
-
-    .cart-item-img {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
+      transition: color 0.3s ease;
       margin-right: 10px;
     }
 
-    .cart-item-details h6 {
-      font-size: 0.95rem;
-      margin-bottom: 3px;
-      line-height: 1.2;
-    }
-
-    .cart-item-details p {
-      font-size: 0.85rem;
+    .search-icon:hover {
       color: #ff6200;
-      margin-bottom: 3px;
-      line-height: 1.2;
     }
-
-    .cart-item-details .quantity {
-      font-size: 0.85rem;
-      color: #333;
-      margin-bottom: 0;
-    }
-
-    .cart-sidebar-footer {
-      margin-top: auto;
-      padding-top: 15px;
-      border-top: 1px solid #eee;
-    }
-
-    .cart-sidebar-footer p {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    #cart-sidebar-items {
-      flex: 1;
-      overflow-y: scroll;
-      margin-bottom: 15px;
-      position: relative;
-    }
-
-    /* Custom Scrollbar Styling */
-    #cart-sidebar-items::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    #cart-sidebar-items::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 4px;
-    }
-
-    #cart-sidebar-items::-webkit-scrollbar-thumb {
-      background: #ff6200;
-      border-radius: 4px;
-    }
-
-    #cart-sidebar-items::-webkit-scrollbar-thumb:hover {
-      background: #e05500;
-    }
-
-    /* Scroll Indicator (Gradient at bottom when scrollable) */
-    #cart-sidebar-items::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 20px;
-      background: linear-gradient(transparent, rgba(255, 255, 255, 0.8));
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    #cart-sidebar-items.scrollable::after {
-      opacity: 1;
-    }
-
-    #cd-shadow-layer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 999;
+    .cart-item-img {
+    width: 60px; /* Adjust as needed */
+    height: 60px; /* Adjust as needed */
+    object-fit: contain; /* Ensures the entire image is visible */
+    border-radius: 5px; /* Optional: Adds rounded corners */
+    border: 1px solid #ddd; /* Optional: Adds a border */
+  }
+    .discount-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #ff6200;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 50%; /* Makes it circular */
+    width: 40px; /* Ensures it's a circle */
+    height: 40px; /* Ensures it's a circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+    .search-bar {
+      width: 0;
+      padding: 0;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+      transition: width 0.3s ease, padding 0.3s ease, border 0.3s ease;
+      font-size: 0.95rem;
+      height: 35px;
+      background-color: #f5f5f5;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
 
-    #cd-shadow-layer.active {
+    .search-bar.active {
+      width: 200px;
+      padding: 5px 10px;
+      border: 1px solid #ddd;
       opacity: 1;
       visibility: visible;
     }
 
-    /* Quick View Images */
-    .quick-view-images img {
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-      margin-bottom: 10px;
-      border-radius: 5px;
+    .search-bar:focus {
+      border-color: #ff6200;
+      box-shadow: 0 0 5px rgba(255, 98, 0, 0.3);
     }
 
-    .quick-view-images {
-      max-height: 400px;
-      overflow-y: auto;
-    }
-
-    /* Stacked Images in Product Card */
-    .stacked-images img {
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-      margin-bottom: 10px;
-      border-radius: 5px;
-    }
-
-    .stacked-images p {
-      text-align: center;
-      margin-bottom: 5px;
-      font-size: 0.9rem;
-      color: #666;
-    }
-
-    /* Remove button style */
-    .remove-cart-item {
+    .search-container .clear-search {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
       background: none;
       border: none;
-      font-size: 1.2rem;
+      font-size: 1rem;
+      color: #666;
       cursor: pointer;
-      color: #ff0000;
-      margin-right: 10px;
+      display: none;
     }
 
-    .remove-cart-item:hover {
-      color: #cc0000;
-    }
-
-    /* Cart Icon and Badge Styling */
-    .cart-trigger {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .cart-icon {
-      font-size: 1.2rem;
-      position: relative;
-    }
-
-    .cart-badge {
-      position: absolute;
-      top: -2px;
-      right: -2px;
-      background-color: #ff0000;
-      color: white;
-      font-size: 0.75rem;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transform: translate(10%, -10%);
+    .search-container .clear-search.active {
+      display: block;
     }
 
     @media (max-width: 991px) {
-      .sidebar {
-        position: fixed;
-        top: 70px;
-        left: 0;
-        height: calc(100vh - 70px);
-        width: 250px;
-        background-color: white;
-        transform: translateX(-100%);
-        z-index: 1000;
-        padding: 20px;
-      }
-
-      .sidebar.active {
-        transform: translateX(0);
-      }
-
-      .sidebar-toggle {
-        display: block;
-      }
-
-      #cart-sidebar {
-        width: 100%;
-        right: -100%;
-      }
-
-      #cart-sidebar.active {
-        right: 0;
+      .search-bar.active {
+        width: 150px;
       }
     }
   </style>
@@ -434,7 +131,8 @@
             <li class="nav-item">
               <div class="search-container">
                 <i class="bi bi-search search-icon"></i>
-                <input type="text" class="search-bar" placeholder="Search...">
+                <input type="text" class="search-bar" placeholder="Search products...">
+                <button class="clear-search" title="Clear search">×</button>
               </div>
             </li>
             <li class="nav-item">
@@ -455,7 +153,8 @@
             <li class="nav-item">
               <div class="search-container">
                 <i class="bi bi-search search-icon"></i>
-                <input type="text" class="search-bar" placeholder="Search...">
+                <input type="text" class="search-bar" placeholder="Search products...">
+                <button class="clear-search" title="Clear search">×</button>
               </div>
             </li>
             <li class="nav-item">
@@ -675,14 +374,61 @@
     const API_BASE_URL = 'http://localhost:3800/api';
     const isDebug = true; // Set to false in production to disable console logs
 
-    // Search bar toggle functionality
-    document.querySelector('.search-icon').addEventListener('click', function() {
+    let products = [];
+    let filteredProducts = [];
+    let selectedCategory = null;
+    let initialMinPrice = 0;
+    let initialMaxPrice = 10000;
+    let searchQuery = ''; // Store the current search query
+
+    // Function to setup search bar functionality
+    function setupSearchBar() {
+      const searchIcon = document.querySelector('.search-icon');
       const searchBar = document.querySelector('.search-bar');
-      searchBar.classList.toggle('active');
-      if (searchBar.classList.contains('active')) {
+      const clearSearchBtn = document.querySelector('.clear-search');
+
+      // Toggle search bar visibility on icon click
+      searchIcon.addEventListener('click', () => {
+        searchBar.classList.toggle('active');
+        if (searchBar.classList.contains('active')) {
+          searchBar.focus();
+        } else {
+          searchBar.value = '';
+          clearSearchBtn.classList.remove('active');
+          searchQuery = '';
+          applyFilters(); // Reset product display
+        }
+      });
+
+      // Show/hide clear button based on input
+      searchBar.addEventListener('input', () => {
+        if (searchBar.value.length > 0) {
+          clearSearchBtn.classList.add('active');
+        } else {
+          clearSearchBtn.classList.remove('active');
+          searchQuery = '';
+          applyFilters(); // Reset product display
+        }
+      });
+
+      // Clear search on button click
+      clearSearchBtn.addEventListener('click', () => {
+        searchBar.value = '';
+        clearSearchBtn.classList.remove('active');
+        searchQuery = '';
         searchBar.focus();
-      }
-    });
+        applyFilters(); // Reset product display
+      });
+
+      // Filter products on search input
+      searchBar.addEventListener('keyup', (e) => {
+        const query = searchBar.value.trim().toLowerCase();
+        searchQuery = query;
+        if (e.key === 'Enter' || query.length >= 2 || query === '') {
+          applyFilters();
+        }
+      });
+    }
 
     // Cart sidebar toggle functionality
     const cartTrigger = document.getElementById('cart-trigger');
@@ -708,12 +454,6 @@
       cartSidebar.classList.remove('active');
       shadowLayer.classList.remove('active');
     });
-
-    let products = [];
-    let filteredProducts = [];
-    let selectedCategory = null;
-    let initialMinPrice = 0;
-    let initialMaxPrice = 10000;
 
     // Function to retry loading an image
     function loadImageWithRetry(imgElement, src, productName, retries = 3, delay = 1000) {
@@ -1176,14 +916,19 @@
       };
     }
 
-    // Apply filters
+    // Apply filters including search
     function applyFilters() {
       const minPrice = parseInt(minPriceRange.value);
       const maxPrice = parseInt(maxPriceRange.value);
       filteredProducts = products.filter(product => {
         const inPriceRange = product.price >= minPrice && product.price <= maxPrice;
         const inCategory = selectedCategory ? product.category === selectedCategory : true;
-        return inPriceRange && inCategory;
+        const matchesSearch = searchQuery
+          ? (product.name.toLowerCase().includes(searchQuery) ||
+             product.shortDescription.toLowerCase().includes(searchQuery) ||
+             product.category.toLowerCase().includes(searchQuery))
+          : true;
+        return inPriceRange && inCategory && matchesSearch;
       });
       applySorting();
     }
@@ -1225,14 +970,14 @@
       sidebar.classList.toggle('active');
     });
 
-    // Load products, categories, and cart total on page load
+    // Load products, categories, cart total, and setup search on page load
     document.addEventListener('DOMContentLoaded', () => {
       fetchProducts();
       cleanCartData();
       updateCartTotal();
       updateCartSidebar();
+      setupSearchBar();
     });
   </script>
 </body>
 </html>
-```

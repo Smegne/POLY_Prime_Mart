@@ -4,6 +4,7 @@ const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const path = require('path');
+const axios = require('axios'); // Add axios for Chapa API calls
 
 const app = express();
 const port = 3800;
@@ -72,13 +73,15 @@ db.query(`
   if (err) console.error('Error creating products table:', err);
 });
 
-// Orders Table
+// Orders Table (Updated to include transaction details)
 db.query(`
   CREATE TABLE IF NOT EXISTS orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     total_amount DECIMAL(10, 2) NOT NULL,
-    status ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending',
+    status ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled', 'paid') DEFAULT 'pending',
+    transaction_id VARCHAR(255),
+    payment_method VARCHAR(50) DEFAULT 'chapa',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
   )
@@ -159,7 +162,6 @@ const isAdmin = (req, res, next) => {
 
 // Routes for Frontend Pages
 app.get('/', (req, res) => {
-  // Fetch products for the homepage (show_in = 'home page')
   db.query("SELECT * FROM products WHERE show_in = 'home page' ORDER BY id DESC", (err, products) => {
     if (err) {
       console.error('Error fetching products for homepage:', err);
@@ -210,7 +212,6 @@ app.get('/terms', (req, res) => {
 });
 
 app.get('/shop', (req, res) => {
-  // Fetch products for the shop page (show_in = 'shop page')
   db.query("SELECT * FROM products WHERE show_in = 'shop page' ORDER BY id DESC", (err, products) => {
     if (err) {
       console.error('Error fetching products for shop page:', err);
@@ -269,12 +270,10 @@ app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Validate input
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    // Query user
     db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
       if (err) {
         console.error('Error fetching user:', err);
@@ -292,14 +291,14 @@ app.post('/login', async (req, res) => {
         return res.status(401).json({ error: 'Invalid email or password' });
       }
 
-      // Set session
       req.session.user = {
         id: user.id,
         username: user.username,
-        role: user.role // Include role in session
+        role: user.role,
+        email: user.email, // Add email to session for Chapa
+        phone: user.phone || '1234567890' // Add phone if available, fallback to placeholder
       };
 
-      // Return success response
       res.status(200).json({ message: 'Login successful' });
     });
   } catch (error) {
@@ -320,7 +319,6 @@ app.get('/logout', (req, res) => {
 });
 
 // Admin Dashboard API Endpoints
-// Product Endpoints
 app.get('/api/products', (req, res) => {
   db.query("SELECT * FROM products ORDER BY id DESC", (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -331,12 +329,10 @@ app.get('/api/products', (req, res) => {
 app.post('/api/products', (req, res) => {
   const { title, description, image_url, price, discount, stock, category, set_in, show_in } = req.body;
 
-  // Validate required fields
   if (!title || !description || !image_url || !price || !stock || !category || !set_in || !show_in) {
     return res.status(400).json({ error: 'All required fields must be provided' });
   }
 
-  // Validate set_in and show_in values
   const validSetIn = ['latest', 'bestselling'];
   const validShowIn = ['home page', 'shop page'];
   if (!validSetIn.includes(set_in) || !validShowIn.includes(show_in)) {
@@ -459,6 +455,114 @@ app.get('/api/site-settings', (req, res) => {
 app.put('/api/site-settings', (req, res) => {
   const { shippingRate, taxRate } = req.body;
   res.json({ message: "Settings updated", shippingRate, taxRate });
+});
+
+// Chapa Payment Initiation
+app.post('/api/initiate-chapa-payment', async (req, res) => {
+  try {
+    const { amount, currency, email, first_name, last_name, phone_number, tx_ref, callback_url, return_url, description, items } = req.body;
+    const userId = req.session.user ? req.session.user.id : null;
+
+    if (!userId) {
+      return res.status(401).json({ status: 'error', message: 'User not authenticated' });
+    }
+
+    // Create order in database
+    const orderQuery = 'INSERT INTO orders (user_id, total_amount, status, transaction_id) VALUES (?, ?, ?, ?)';
+    db.query(orderQuery, [userId, amount, 'pending', tx_ref], (err, result) => {
+      if (err) {
+        console.error('Error creating order:', err);
+        return res.status(500).json({ status: 'error', message: 'Failed to create order' });
+      }
+
+      // Chapa API call
+      axios.post(
+        'https://api.chapa.co/v1/transaction/initialize',
+        {
+          amount,
+          currency,
+          email,
+          first_name,
+          last_name,
+          phone_number,
+          tx_ref,
+          callback_url,
+          return_url,
+          description,
+          custom_fields: [
+            { name: 'items', value: JSON.stringify(items) }
+          ]
+        },
+        {
+          headers: {
+            Authorization: 'CHASECK_TEST-ZHGLLnm05Xip7cmc1vaEn1fGzgxmexY1', // Replace with your Chapa API key
+            'Content-Type': 'application/json',
+          },
+        }
+      ).then(chapaResponse => {
+        if (chapaResponse.data.status === 'success') {
+          res.json({
+            status: 'success',
+            data: chapaResponse.data.data,
+          });
+        } else {
+          throw new Error('Chapa payment initiation failed');
+        }
+      }).catch(error => {
+        console.error('Error initiating Chapa payment:', error);
+        res.status(500).json({
+          status: 'error',
+          message: error.response?.data?.message || 'Failed to initiate payment',
+        });
+      });
+    });
+  } catch (error) {
+    console.error('Error in payment initiation:', error);
+    res.status(500).json({
+      status: 'error',
+      message: error.message,
+    });
+  }
+});
+
+// Chapa Callback/Webhook
+app.post('/payment/callback', (req, res) => {
+  try {
+    const { tx_ref, status } = req.body;
+
+    if (status === 'success') {
+      // Verify transaction with Chapa (optional but recommended)
+      axios.get(`https://api.chapa.co/v1/transaction/verify/${tx_ref}`, {
+        headers: {
+          Authorization: 'CHASECK_TEST-ZHGLLnm05Xip7cmc1vaEn1fGzgxmexY1', // Replace with your Chapa API key
+        },
+      }).then(verifyResponse => {
+        if (verifyResponse.data.status === 'success') {
+          // Update order status to 'paid'
+          db.query(
+            'UPDATE orders SET status = ?, transaction_id = ? WHERE transaction_id = ?',
+            ['paid', tx_ref, tx_ref],
+            (err, result) => {
+              if (err) {
+                console.error('Error updating order status:', err);
+              } else if (result.affectedRows > 0) {
+                console.log(`Order ${tx_ref} marked as paid`);
+              }
+            }
+          );
+        }
+      }).catch(err => {
+        console.error('Error verifying Chapa transaction:', err);
+      });
+    } else {
+      console.log(`Payment failed for tx_ref: ${tx_ref}`);
+      // Optionally update order status to 'cancelled' or handle failed payment
+    }
+    res.status(200).send('Webhook received');
+  } catch (error) {
+    console.error('Error handling Chapa callback:', error);
+    res.status(500).send('Error processing webhook');
+  }
 });
 
 // Start the Server
